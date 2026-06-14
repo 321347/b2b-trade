@@ -18,7 +18,7 @@ export default function SearchPage({ variant = 'home' }) {
   const [smtpConfigured, setSmtpConfigured] = useState(false);
   const [quota, setQuota] = useState(null);
   const [selectedIndustry, setSelectedIndustry] = useState(null);
-  const [showCustom, setShowCustom] = useState(false);
+  const [showCustom, setShowCustom] = useState(true);
   const inputRef = useRef(null);
   const isHome = variant === 'home';
 
