@@ -168,13 +168,14 @@ export default function Admin() {
                 <th style={{ padding: 12, textAlign: 'left' }}>邮箱</th>
                 <th style={{ padding: 12, textAlign: 'center' }}>当前套餐</th>
                 <th style={{ padding: 12, textAlign: 'center' }}>剩余搜索</th>
+                <th style={{ padding: 12, textAlign: 'center' }}>API密钥</th>
                 <th style={{ padding: 12, textAlign: 'center' }}>注册时间</th>
                 <th style={{ padding: 12, textAlign: 'center' }}>操作</th>
               </tr>
             </thead>
             <tbody>
               {paged.length === 0 ? (
-                <tr><td colSpan={6} style={{ padding: 40, textAlign: 'center', color: '#94a3b8' }}>无匹配用户</td></tr>
+                <tr><td colSpan={7} style={{ padding: 40, textAlign: 'center', color: '#94a3b8' }}>无匹配用户</td></tr>
               ) : (
                 paged.map((u, i) => (
                   <tr key={u.id} style={{ borderBottom: '1px solid #f0f0f0', background: i % 2 === 0 ? '#fff' : '#fafafa' }}>
@@ -184,6 +185,26 @@ export default function Admin() {
                       <span style={{ padding: '3px 10px', borderRadius: 12, fontSize: 12, fontWeight: 600, background: u.plan === 'enterprise' ? '#0f172a' : u.plan === 'pro' ? '#2563eb' : '#f1f5f9', color: u.plan === 'enterprise' || u.plan === 'pro' ? '#fff' : '#334155' }}>{PLAN_NAMES[u.plan] || u.plan}</span>
                     </td>
                     <td style={{ padding: 10, textAlign: 'center' }}>{u.searchesLeft}</td>
+                    <td style={{ padding: 10, textAlign: 'center' }}>
+                      {u.apiKey ? (
+                        <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+                          <code style={{ fontSize: 11, background: '#f1f5f9', padding: '2px 6px', borderRadius: 4, maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={u.apiKey}>{u.apiKey.slice(0, 12)}...</code>
+                          <button onClick={() => { navigator.clipboard.writeText(u.apiKey); setMsg('已复制 API Key'); }}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, color: '#2563eb' }}>复制</button>
+                          <button onClick={async () => {
+                            await fetch('/api/admin/api-key', { method: 'POST', body: JSON.stringify({ userId: u.id, action: 'revoke' }), headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` } });
+                            setMsg('已撤销 API Key'); fetchUsers(token);
+                          }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, color: '#dc2626' }}>撤销</button>
+                        </span>
+                      ) : (
+                        <button onClick={async () => {
+                          const res = await fetch('/api/admin/api-key', { method: 'POST', body: JSON.stringify({ userId: u.id, action: 'generate' }), headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` } });
+                          const d = await res.json();
+                          if (d.ok) { setMsg('已生成 API Key: ' + d.api_key); fetchUsers(token); }
+                          else setMsg(d.error);
+                        }} style={{ padding: '4px 10px', borderRadius: 4, border: '1px solid #e5e7eb', background: '#fff', cursor: 'pointer', fontSize: 12 }}>生成</button>
+                      )}
+                    </td>
                     <td style={{ padding: 10, textAlign: 'center', color: '#94a3b8', fontSize: 13 }}>{u.created ? new Date(u.created).toLocaleDateString('zh-CN') : '-'}</td>
                     <td style={{ padding: 10, textAlign: 'center' }}>
                       <select value={u.plan} onChange={e => changePlan(u.id, e.target.value)} style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid #e5e7eb', fontSize: 13 }}>

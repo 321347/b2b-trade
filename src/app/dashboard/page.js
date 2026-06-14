@@ -181,6 +181,37 @@ export default function Dashboard() {
         )}
       </div>
 
+      {/* API 密钥（仅企业版） */}
+      {data.user?.plan === 'enterprise' && (
+        <div style={{ background: '#fff', borderRadius: 10, padding: 24, border: '1px solid #e5e7eb', marginBottom: 20 }}>
+          <div style={{ fontSize: 14, color: '#64748b', marginBottom: 12 }}>API 密钥</div>
+          {data.user.apiKey ? (
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                <code style={{ fontSize: 13, background: '#f1f5f9', padding: '8px 12px', borderRadius: 6, wordBreak: 'break-all', flex: 1 }}>{data.user.apiKey}</code>
+                <button onClick={() => { navigator.clipboard.writeText(data.user.apiKey); alert('已复制'); }}
+                  style={{ padding: '8px 16px', borderRadius: 6, border: '1px solid #2563eb', background: '#fff', color: '#2563eb', fontSize: 13, cursor: 'pointer', whiteSpace: 'nowrap' }}>复制</button>
+              </div>
+              <div style={{ fontSize: 13, color: '#94a3b8', lineHeight: 1.8 }}>
+                POST <code style={{ background: '#f1f5f9', padding: '2px 6px', borderRadius: 3, fontSize: 12 }}>/api/v1/search</code> 传 <code style={{ background: '#f1f5f9', padding: '2px 6px', borderRadius: 3, fontSize: 12 }}>{'{ "domain": "example.com" }'}</code>，Header: <code style={{ background: '#f1f5f9', padding: '2px 6px', borderRadius: 3, fontSize: 12 }}>Authorization: Bearer {data.user.apiKey.slice(0, 8)}...</code>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <div style={{ fontSize: 13, color: '#94a3b8', marginBottom: 8 }}>尚未生成 API 密钥</div>
+              <button onClick={async () => {
+                const r = await fetch('/api/user/api-key', { method: 'POST', body: JSON.stringify({ action: 'generate' }), headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + localStorage.getItem('token') } });
+                const d = await r.json();
+                if (d.ok) { alert('API Key: ' + d.api_key); window.location.reload(); }
+                else alert(d.error || '生成失败');
+              }} style={{ padding: '8px 16px', borderRadius: 6, border: '1px solid #2563eb', background: '#fff', color: '#2563eb', fontSize: 13, cursor: 'pointer', fontWeight: 500 }}>
+                生成 API 密钥
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* 最近搜索 */}
       <div style={{ background: '#fff', borderRadius: 10, padding: 24, border: '1px solid #e5e7eb', marginBottom: 20 }}>
         <div style={{ fontSize: 14, color: '#64748b', marginBottom: 12 }}>最近搜索</div>

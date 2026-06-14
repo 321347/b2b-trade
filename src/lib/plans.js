@@ -42,6 +42,7 @@ export async function listAllUsers() {
         plan,
         planName: PLANS[plan]?.name || '免费版',
         searchesLeft: typeof quota === 'number' ? quota : PLANS[plan]?.searches || 10,
+        apiKey: u.user_metadata?.api_key || '',
         created: u.created_at,
         lastSignIn: u.last_sign_in_at,
       };
