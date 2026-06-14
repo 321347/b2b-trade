@@ -140,19 +140,19 @@ export default function EmailSettings() {
       value={form[field]}
       onChange={e => update(field, type === 'number' ? parseInt(e.target.value) || '' : e.target.value)}
       placeholder={placeholder}
-      style={{ width: '100%', padding: '10px 12px', borderRadius: 6, border: '1px solid #d1d5db', fontSize: 14, outline: 'none', background: '#fff', color: '#0f172a' }}
+      style={{ width: '100%', padding: '12px 14px', borderRadius: 8, border: '1px solid #d1d5db', fontSize: 15, outline: 'none', background: '#fff', color: '#0f172a' }}
     />
   );
 
   return (
-    <div style={{ maxWidth: 640, margin: '0 auto', padding: '40px 20px 80px' }}>
+    <div style={{ maxWidth: 720, margin: '0 auto', padding: '40px 20px 80px' }}>
       <h1 style={{ fontSize: 22, fontWeight: 700, color: '#0f172a', marginBottom: 8 }}>邮箱设置</h1>
       <p style={{ fontSize: 14, color: '#94a3b8', marginBottom: 28 }}>
         配置你的公司邮箱，开发信将以你的名义一键发送，客户回复直接到你邮箱。
       </p>
 
       {/* Form */}
-      <div style={{ background: '#fff', borderRadius: 10, border: '1px solid #e5e5e5', padding: 20, marginBottom: 24 }}>
+      <div style={{ background: '#fff', borderRadius: 10, border: '1px solid #e5e5e5', padding: 24, marginBottom: 24 }}>
         <div style={{ fontSize: 15, fontWeight: 600, color: '#0f172a', marginBottom: 16 }}>SMTP 配置</div>
 
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>
@@ -174,14 +174,14 @@ export default function EmailSettings() {
               <div style={{ fontSize: 13, color: '#64748b', marginBottom: 4 }}>SMTP 服务器</div>
               {inp('host', 'smtp.qq.com')}
             </div>
-            <div style={{ width: 100 }}>
+            <div style={{ width: 120 }}>
               <div style={{ fontSize: 13, color: '#64748b', marginBottom: 4 }}>端口</div>
               <input
                 type="number"
                 value={form.port}
                 onChange={e => update('port', parseInt(e.target.value) || 465)}
                 placeholder="465"
-                style={{ width: '100%', padding: '10px 12px', borderRadius: 6, border: '1px solid #d1d5db', fontSize: 14, outline: 'none', background: '#fff', color: '#0f172a' }}
+                style={{ width: '100%', padding: '12px 14px', borderRadius: 8, border: '1px solid #d1d5db', fontSize: 15, outline: 'none', background: '#fff', color: '#0f172a' }}
               />
             </div>
           </div>

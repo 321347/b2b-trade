@@ -2,6 +2,10 @@ import Nav from './Nav';
 
 export const viewport = { width: 'device-width', initialScale: 1 };
 
+export const icons = {
+  icon: 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐟</text></svg>',
+};
+
 export const metadata = {
   title: {
     default: '鱼获科技 - 外贸获客工具 | 智能找海外客户 + 自动发开发信',
