@@ -17,13 +17,43 @@ export default function Pricing() {
         { text: '回复追踪', included: true },
         { text: '数据分析看板', included: false },
         { text: '自定义品类', included: false },
+        { text: 'API 接入', included: false },
       ],
-      btn: '免费注册', href: '/register', primary: false, style: 'outline',
+      btn: '免费注册', href: '/register', style: 'outline',
+    },
+    {
+      name: '入门版', price: 49, yearlyPrice: 39, period: '/月',
+      features: [
+        { text: '100 次搜索/月', included: true, bold: true },
+        { text: '邮箱查找', included: true },
+        { text: '邮箱验证', included: false },
+        { text: '自动发信（50封/天）', included: true },
+        { text: '自动跟进', included: false },
+        { text: '回复追踪', included: true },
+        { text: '数据分析看板', included: false },
+        { text: '自定义品类', included: false },
+        { text: 'API 接入', included: false },
+      ],
+      btn: '立即升级', onClick: () => setShowContact(true), style: 'light',
+    },
+    {
+      name: '基础版', price: 99, yearlyPrice: 79, period: '/月',
+      features: [
+        { text: '300 次搜索/月', included: true, bold: true },
+        { text: '邮箱查找 + 验证', included: true },
+        { text: '自动发信（无限制）', included: true },
+        { text: '自动跟进', included: true },
+        { text: '回复追踪', included: true },
+        { text: '数据分析看板', included: true },
+        { text: '自定义品类', included: false },
+        { text: 'API 接入', included: false },
+      ],
+      btn: '立即升级', onClick: () => setShowContact(true), style: 'light',
     },
     {
       name: '专业版', price: 199, yearlyPrice: 159, period: '/月',
       features: [
-        { text: '500 次搜索/月', included: true, bold: true },
+        { text: '800 次搜索/月', included: true, bold: true },
         { text: '邮箱查找 + 验证', included: true },
         { text: '自动发信（无限制）', included: true },
         { text: '自动跟进', included: true },
@@ -35,7 +65,7 @@ export default function Pricing() {
       btn: '立即升级', onClick: () => setShowContact(true), primary: true, style: 'primary',
     },
     {
-      name: '企业版', price: 699, yearlyPrice: 559, period: '/月',
+      name: '企业版', price: 399, yearlyPrice: 319, period: '/月',
       features: [
         { text: '2000 次搜索/月', included: true, bold: true },
         { text: '专业版全部功能', included: true },
@@ -45,23 +75,23 @@ export default function Pricing() {
         { text: '优先数据更新', included: true },
         { text: '团队账号（最多10人）', included: true },
       ],
-      btn: '联系客服', onClick: () => setShowContact(true), primary: false, style: 'dark',
+      btn: '联系客服', onClick: () => setShowContact(true), style: 'dark',
     },
   ];
 
   // 功能对比表数据
   const compareRows = [
-    { feature: '每月搜索次数', free: '25 次', pro: '500 次', ent: '2000 次' },
-    { feature: '邮箱查找', free: true, pro: true, ent: true },
-    { feature: '邮箱验证（有效性检测）', free: false, pro: true, ent: true },
-    { feature: '自动发信', free: '5 封/天', pro: '无限制', ent: '无限制' },
-    { feature: '自动跟进（未回复提醒）', free: false, pro: true, ent: true },
-    { feature: '回复追踪', free: true, pro: true, ent: true },
-    { feature: '数据分析看板', free: false, pro: true, ent: true },
-    { feature: '自定义品类', free: false, pro: true, ent: true },
-    { feature: 'API 接入', free: false, pro: false, ent: true },
-    { feature: '专属客服', free: false, pro: false, ent: true },
-    { feature: '团队账号', free: '1 人', pro: '1 人', ent: '最多 10 人' },
+    { feature: '每月搜索次数', free: '25 次', starter: '100 次', basic: '300 次', pro: '800 次', ent: '2000 次' },
+    { feature: '邮箱查找', free: true, starter: true, basic: true, pro: true, ent: true },
+    { feature: '邮箱验证（有效性检测）', free: false, starter: false, basic: true, pro: true, ent: true },
+    { feature: '自动发信', free: '5 封/天', starter: '50 封/天', basic: '无限制', pro: '无限制', ent: '无限制' },
+    { feature: '自动跟进（未回复提醒）', free: false, starter: false, basic: true, pro: true, ent: true },
+    { feature: '回复追踪', free: true, starter: true, basic: true, pro: true, ent: true },
+    { feature: '数据分析看板', free: false, starter: false, basic: true, pro: true, ent: true },
+    { feature: '自定义品类', free: false, starter: false, basic: false, pro: true, ent: true },
+    { feature: 'API 接入', free: false, starter: false, basic: false, pro: false, ent: true },
+    { feature: '专属客服', free: false, starter: false, basic: false, pro: false, ent: true },
+    { feature: '团队账号', free: '1 人', starter: '1 人', basic: '1 人', pro: '1 人', ent: '最多 10 人' },
   ];
 
   function CellValue({ val }) {
@@ -71,7 +101,7 @@ export default function Pricing() {
   }
 
   return (
-    <div style={{ maxWidth: 960, margin: '40px auto', padding: '0 20px', textAlign: 'center' }}>
+    <div style={{ maxWidth: 1100, margin: '40px auto', padding: '0 20px', textAlign: 'center' }}>
       <h1 style={{ fontSize: 32, fontWeight: 800, color: '#0f172a', marginBottom: 8 }}>选择适合你的方案</h1>
       <p style={{ fontSize: 16, color: '#94a3b8', marginBottom: 32 }}>按月付费，随时取消。注册即送免费额度。</p>
 
@@ -88,14 +118,14 @@ export default function Pricing() {
       </div>
 
       {/* 定价卡片 */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 20, alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 12, alignItems: 'start', maxWidth: 1100, margin: '0 auto' }}>
         {plans.map(p => {
           const displayPrice = billing === 'yearly' && p.yearlyPrice > 0 ? p.yearlyPrice : p.price;
           const yearlyNote = billing === 'yearly' && p.yearlyPrice > 0 ? `年付 ¥${p.yearlyPrice * 12}，省 ¥${(p.price - p.yearlyPrice) * 12}` : '';
 
           return (
             <div key={p.name} style={{
-              background: '#fff', borderRadius: 12, padding: 32,
+              background: '#fff', borderRadius: 12, padding: '24px 16px',
               border: p.primary ? '2px solid #2563eb' : '1px solid #e5e7eb',
               boxShadow: p.primary ? '0 8px 32px rgba(37,99,235,0.12)' : '0 1px 3px rgba(0,0,0,0.04)',
               position: 'relative',
@@ -130,19 +160,18 @@ export default function Pricing() {
 
               {p.onClick ? (
                 <button onClick={p.onClick} style={{
-                  display: 'block', width: '100%', padding: 12, borderRadius: 8, fontSize: 15, fontWeight: 600, textAlign: 'center', cursor: 'pointer',
-                  background: p.style === 'dark' ? '#0f172a' : p.style === 'primary' ? '#2563eb' : 'transparent',
-                  color: p.style === 'outline' ? '#2563eb' : '#fff',
-                  border: p.style === 'outline' ? '2px solid #2563eb' : 'none',
+                  display: 'block', width: '100%', padding: 12, borderRadius: 8, fontSize: 14, fontWeight: 600, textAlign: 'center', cursor: 'pointer',
+                  background: p.style === 'dark' ? '#0f172a' : p.style === 'primary' ? '#2563eb' : p.style === 'light' ? '#f1f5f9' : 'transparent',
+                  color: p.style === 'dark' || p.style === 'primary' ? '#fff' : p.style === 'outline' ? '#2563eb' : '#334155',
+                  border: p.style === 'outline' ? '2px solid #2563eb' : p.style === 'light' ? '1px solid #e5e7eb' : 'none',
                   boxShadow: p.style === 'primary' ? '0 2px 8px rgba(37,99,235,0.2)' : 'none',
                 }}>{p.btn}</button>
               ) : (
                 <a href={p.href} style={{
-                  display: 'block', padding: 12, borderRadius: 8, textDecoration: 'none', fontSize: 15, fontWeight: 600, textAlign: 'center',
-                  background: p.style === 'dark' ? '#0f172a' : p.style === 'primary' ? '#2563eb' : 'transparent',
+                  display: 'block', padding: 12, borderRadius: 8, textDecoration: 'none', fontSize: 14, fontWeight: 600, textAlign: 'center',
+                  background: p.style === 'dark' ? '#0f172a' : 'transparent',
                   color: p.style === 'outline' ? '#2563eb' : '#fff',
                   border: p.style === 'outline' ? '2px solid #2563eb' : 'none',
-                  boxShadow: p.style === 'primary' ? '0 2px 8px rgba(37,99,235,0.2)' : 'none',
                 }}>{p.btn}</a>
               )}
             </div>
@@ -156,19 +185,23 @@ export default function Pricing() {
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14, background: '#fff', borderRadius: 12, overflow: 'hidden', border: '1px solid #e5e7eb' }}>
           <thead>
             <tr style={{ background: '#f8fafc' }}>
-              <th style={{ padding: '14px 16px', textAlign: 'left', fontWeight: 600, color: '#0f172a', borderBottom: '2px solid #e5e7eb' }}>功能</th>
-              <th style={{ padding: '14px 16px', textAlign: 'center', fontWeight: 600, color: '#0f172a', borderBottom: '2px solid #e5e7eb' }}>免费版</th>
-              <th style={{ padding: '14px 16px', textAlign: 'center', fontWeight: 600, color: '#2563eb', borderBottom: '2px solid #e5e7eb' }}>专业版</th>
-              <th style={{ padding: '14px 16px', textAlign: 'center', fontWeight: 600, color: '#0f172a', borderBottom: '2px solid #e5e7eb' }}>企业版</th>
+              <th style={{ padding: '14px 12px', textAlign: 'left', fontWeight: 600, color: '#0f172a', borderBottom: '2px solid #e5e7eb', fontSize: 13 }}>功能</th>
+              <th style={{ padding: '14px 8px', textAlign: 'center', fontWeight: 600, color: '#0f172a', borderBottom: '2px solid #e5e7eb', fontSize: 13 }}>免费</th>
+              <th style={{ padding: '14px 8px', textAlign: 'center', fontWeight: 600, color: '#0f172a', borderBottom: '2px solid #e5e7eb', fontSize: 13 }}>入门</th>
+              <th style={{ padding: '14px 8px', textAlign: 'center', fontWeight: 600, color: '#0f172a', borderBottom: '2px solid #e5e7eb', fontSize: 13 }}>基础</th>
+              <th style={{ padding: '14px 8px', textAlign: 'center', fontWeight: 600, color: '#2563eb', borderBottom: '2px solid #e5e7eb', fontSize: 13 }}>专业</th>
+              <th style={{ padding: '14px 8px', textAlign: 'center', fontWeight: 600, color: '#0f172a', borderBottom: '2px solid #e5e7eb', fontSize: 13 }}>企业</th>
             </tr>
           </thead>
           <tbody>
             {compareRows.map((row, i) => (
               <tr key={row.feature} style={{ borderBottom: '1px solid #f0f0f0' }}>
-                <td style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 500, color: '#333' }}>{row.feature}</td>
-                <td style={{ padding: '12px 16px', textAlign: 'center', color: '#64748b' }}><CellValue val={row.free} /></td>
-                <td style={{ padding: '12px 16px', textAlign: 'center', color: '#64748b' }}><CellValue val={row.pro} /></td>
-                <td style={{ padding: '12px 16px', textAlign: 'center', color: '#64748b' }}><CellValue val={row.ent} /></td>
+                <td style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 500, color: '#333', fontSize: 13 }}>{row.feature}</td>
+                <td style={{ padding: '10px 8px', textAlign: 'center', color: '#64748b', fontSize: 13 }}><CellValue val={row.free} /></td>
+                <td style={{ padding: '10px 8px', textAlign: 'center', color: '#64748b', fontSize: 13 }}><CellValue val={row.starter} /></td>
+                <td style={{ padding: '10px 8px', textAlign: 'center', color: '#64748b', fontSize: 13 }}><CellValue val={row.basic} /></td>
+                <td style={{ padding: '10px 8px', textAlign: 'center', color: '#64748b', fontSize: 13 }}><CellValue val={row.pro} /></td>
+                <td style={{ padding: '10px 8px', textAlign: 'center', color: '#64748b', fontSize: 13 }}><CellValue val={row.ent} /></td>
               </tr>
             ))}
           </tbody>
