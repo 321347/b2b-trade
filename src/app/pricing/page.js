@@ -70,12 +70,15 @@ export default function Pricing() {
       name: '企业版', price: 399, yearlyPrice: 319, period: '/月',
       features: [
         { text: '2000 次搜索/月', included: true, bold: true },
-        { text: '专业版全部功能', included: true },
-        { text: 'API 接入', included: true },
-        { text: '一对一专属客服', included: true },
-        { text: '定制化需求', included: true },
-        { text: '优先数据更新', included: true },
-        { text: '团队账号（最多10人）', included: true },
+        { text: '邮箱查找（完整）', included: true },
+        { text: '邮箱验证', included: true },
+        { text: '自动发信（无限制）', included: true },
+        { text: '自动跟进', included: true },
+        { text: '回复追踪', included: true },
+        { text: '数据分析看板', included: true },
+        { text: '自定义品类', included: true },
+        { text: 'API 接入 + 专属客服', included: true },
+        { text: '团队账号（10人）', included: true },
       ],
       btn: '联系客服', onClick: () => setShowContact(true), style: 'dark',
     },
@@ -120,7 +123,7 @@ export default function Pricing() {
       </div>
 
       {/* 定价卡片 */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 12, alignItems: 'start', maxWidth: 1100, margin: '0 auto' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 12, alignItems: 'stretch', maxWidth: 1100, margin: '0 auto' }}>
         {plans.map(p => {
           const displayPrice = billing === 'yearly' && p.yearlyPrice > 0 ? p.yearlyPrice : p.price;
           const yearlyNote = billing === 'yearly' && p.yearlyPrice > 0 ? `年付 ¥${p.yearlyPrice * 12}，省 ¥${(p.price - p.yearlyPrice) * 12}` : '';
@@ -131,7 +134,7 @@ export default function Pricing() {
               border: p.primary ? '2px solid #2563eb' : '1px solid #e5e7eb',
               boxShadow: p.primary ? '0 8px 32px rgba(37,99,235,0.12)' : '0 1px 3px rgba(0,0,0,0.04)',
               position: 'relative',
-              transform: p.primary ? 'scale(1.03)' : 'none',
+              display: 'flex', flexDirection: 'column', height: '100%',
             }}>
               {p.primary && (
                 <div style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', background: '#2563eb', color: '#fff', padding: '4px 16px', borderRadius: 12, fontSize: 12, fontWeight: 600 }}>
@@ -162,7 +165,7 @@ export default function Pricing() {
 
               {p.onClick ? (
                 <button onClick={p.onClick} style={{
-                  display: 'block', width: '100%', padding: 12, borderRadius: 8, fontSize: 14, fontWeight: 600, textAlign: 'center', cursor: 'pointer',
+                  display: 'block', width: '100%', padding: 12, borderRadius: 8, fontSize: 14, fontWeight: 600, textAlign: 'center', cursor: 'pointer', marginTop: 'auto',
                   background: p.style === 'dark' ? '#0f172a' : p.style === 'primary' ? '#2563eb' : p.style === 'light' ? '#f1f5f9' : 'transparent',
                   color: p.style === 'dark' || p.style === 'primary' ? '#fff' : p.style === 'outline' ? '#2563eb' : '#334155',
                   border: p.style === 'outline' ? '2px solid #2563eb' : p.style === 'light' ? '1px solid #e5e7eb' : 'none',
@@ -170,7 +173,7 @@ export default function Pricing() {
                 }}>{p.btn}</button>
               ) : (
                 <a href={p.href} style={{
-                  display: 'block', padding: 12, borderRadius: 8, textDecoration: 'none', fontSize: 14, fontWeight: 600, textAlign: 'center',
+                  display: 'block', padding: 12, borderRadius: 8, textDecoration: 'none', fontSize: 14, fontWeight: 600, textAlign: 'center', marginTop: 'auto',
                   background: p.style === 'dark' ? '#0f172a' : 'transparent',
                   color: p.style === 'outline' ? '#2563eb' : '#fff',
                   border: p.style === 'outline' ? '2px solid #2563eb' : 'none',

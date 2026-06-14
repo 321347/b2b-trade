@@ -22,10 +22,15 @@ export default function SearchPage({ variant = 'home' }) {
   const inputRef = useRef(null);
   const isHome = variant === 'home';
 
+  const [userPlan, setUserPlan] = useState('free');
+
   useEffect(() => {
     const u = localStorage.getItem('user');
     if (u) {
-      setUser(JSON.parse(u));
+      const parsed = JSON.parse(u);
+      setUser(parsed);
+      const plan = parsed.user_metadata?.plan || 'free';
+      setUserPlan(plan);
       fetch('/api/smtp-config', { headers: authHeaders() }).then(r => r.json()).then(d => setSmtpConfigured(!!d.config));
     }
   }, []);
@@ -243,7 +248,7 @@ export default function SearchPage({ variant = 'home' }) {
                 <span style={{ fontSize: 12, color: '#94a3b8' }}>{c.emails.length} 人</span>
               </div>
 
-              {user ? (
+              {user && (userPlan === 'basic' || userPlan === 'pro' || userPlan === 'enterprise') ? (
                 <div style={{ padding: '6px 16px 12px' }}>
                   {c.emails.map((email, j) => (
                     <div key={j} style={{ padding: '6px 0', borderBottom: j < c.emails.length - 1 ? '1px solid #fafafa' : 'none' }}>
@@ -266,10 +271,15 @@ export default function SearchPage({ variant = 'home' }) {
                   ))}
                 </div>
               ) : (
-                <div style={{ padding: '10px 16px', display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                  {c.emails.map((email, j) => (
-                    <span key={j} style={{ padding: '5px 12px', borderRadius: 6, background: '#f5f5f5', fontSize: 12, color: '#94a3b8', fontFamily: 'monospace' }}>{maskEmail(email)}</span>
-                  ))}
+                <div style={{ padding: '10px 16px' }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: user ? 8 : 0 }}>
+                    {c.emails.map((email, j) => (
+                      <span key={j} style={{ padding: '5px 12px', borderRadius: 6, background: '#f5f5f5', fontSize: 12, color: '#94a3b8', fontFamily: 'monospace' }}>{maskEmail(email)}</span>
+                    ))}
+                  </div>
+                  {user && (userPlan === 'free' || userPlan === 'starter') && (
+                    <a href="/pricing" style={{ fontSize: 12, color: '#2563eb', textDecoration: 'none' }}>升级套餐查看完整邮箱 →</a>
+                  )}
                 </div>
               )}
             </div>

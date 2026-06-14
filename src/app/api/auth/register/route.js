@@ -4,8 +4,6 @@ import { checkRateLimit } from '@/lib/rate-limit';
 
 const supabase = getSupabase();
 
-const FREE_QUOTA = 10;
-
 export async function POST(req) {
   const ip = req.headers.get('x-forwarded-for') || 'unknown';
   const rl = checkRateLimit('register', ip);
@@ -19,7 +17,7 @@ export async function POST(req) {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { name: name || email.split('@')[0], searchQuota: FREE_QUOTA } }
+    options: { data: { name: name || email.split('@')[0], plan: 'free', quota_free: 10 } }
   });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });

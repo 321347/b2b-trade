@@ -3,6 +3,7 @@ import nodemailer from 'nodemailer';
 import { requireAuth } from '@/lib/auth';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { getSmtpConfig } from '@/lib/smtp-store';
+import { getSendLimit, recordSend } from '@/lib/quota';
 
 function safeName(s) {
   return (s || '').replace(/[\r\n\t\\"]/g, '').replace(/[^\w一-鿿\s·@.(),&+\-]/g, '').slice(0, 100);
@@ -24,6 +25,9 @@ export async function POST(req) {
 
   const rl = checkRateLimit('send', user.id);
   if (!rl.allowed) return NextResponse.json({ error: '发送太频繁，请稍后再试' }, { status: 429 });
+
+  const sendLimit = await getSendLimit(req);
+  if (sendLimit && !sendLimit.allowed) return NextResponse.json({ error: `今日发信已达上限（${sendLimit.maxPerDay}封/天），请升级套餐或明天再试` }, { status: 429 });
 
   const body = await req.json();
 
@@ -62,6 +66,7 @@ export async function POST(req) {
       await new Promise(r => setTimeout(r, 500));
     }
     const ok = results.filter(r => r.status === 'ok').length;
+    if (ok > 0) await recordSend(req, ok);
     return NextResponse.json({ ok: true, results, sent: ok, failed: results.length - ok });
   }
 
@@ -92,6 +97,7 @@ export async function POST(req) {
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
       const info = await transporter.sendMail({ from, to: recipient, subject: subject || 'Business Inquiry', html });
+      await recordSend(req);
       return NextResponse.json({ ok: true, results: [{ email: recipient, status: 'ok', messageId: info.messageId }], sent: 1, failed: 0 });
     } catch (e) {
       lastError = e;
