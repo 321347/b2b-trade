@@ -178,11 +178,11 @@ export default function Pricing() {
       {/* 企微客服弹窗 */}
       {showContact && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', justifyContent: 'center', alignItems: 'center' }} onClick={() => setShowContact(false)}>
-          <div style={{ background: '#fff', borderRadius: 16, padding: 40, maxWidth: 380, width: '90%', textAlign: 'center' }} onClick={e => e.stopPropagation()}>
+          <div style={{ background: '#fff', borderRadius: 16, padding: 32, maxWidth: 340, width: '90%', textAlign: 'center' }} onClick={e => e.stopPropagation()}>
             <h3 style={{ fontSize: 20, fontWeight: 700, margin: '0 0 8px', color: '#0f172a' }}>联系专属客服</h3>
-            <p style={{ fontSize: 14, color: '#64748b', margin: '0 0 20px' }}>扫码添加企业微信，获取企业版详情和定制方案</p>
-            <img src="/78993206bd28b9b4f6a7a2929c33855b.jpg" alt="企业微信二维码" style={{ width: 200, height: 200, borderRadius: 12, margin: '0 auto 16px', display: 'block' }} />
-            <p style={{ fontSize: 12, color: '#94a3b8', margin: 0 }}>工作日 9:00-18:00 在线，1小时内回复</p>
+            <p style={{ fontSize: 14, color: '#64748b', margin: '0 0 16px' }}>扫码添加企业微信，获取企业版详情和定制方案</p>
+            <img src="/78993206bd28b9b4f6a7a2929c33855b.jpg" alt="企业微信二维码" style={{ width: '100%', borderRadius: 12, display: 'block' }} />
+            <p style={{ fontSize: 12, color: '#94a3b8', margin: '12px 0 0' }}>工作日 9:00-18:00 在线，1小时内回复</p>
           </div>
         </div>
       )}
