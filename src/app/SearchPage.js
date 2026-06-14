@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
+import { Check } from 'lucide-react';
 import { maskEmail, loadHistory, saveHistory, authHeaders, MARKETS, INDUSTRY_GROUPS } from '@/lib/utils';
 
 export default function SearchPage({ variant = 'home' }) {
@@ -312,7 +313,7 @@ export default function SearchPage({ variant = 'home' }) {
               )}
               <button onClick={copyAll}
                 style={{ padding: '12px 24px', borderRadius: 8, border: '1px solid #e5e5e5', background: copiedAll ? '#16a34a' : '#fff', color: copiedAll ? '#fff' : '#64748b', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
-                {copiedAll ? '已复制 ✓' : '复制全部（备用）'}
+                {copiedAll ? <><Check size={14} /> 已复制</> : '复制全部（备用）'}
               </button>
             </div>
           )}

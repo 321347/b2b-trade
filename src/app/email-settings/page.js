@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { Check } from 'lucide-react';
 
 const PRESETS = [
   { label: 'QQ邮箱', host: 'smtp.qq.com', port: 465 },
@@ -206,7 +207,7 @@ export default function EmailSettings() {
         <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
           <button onClick={handleSave}
             style={{ flex: 1, padding: '11px', borderRadius: 8, background: '#0f172a', color: '#fff', border: 'none', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
-            {saved ? '已保存 ✓' : '保存配置'}
+            {saved ? <><Check size={14} /> 已保存</> : '保存配置'}
           </button>
           <button onClick={handleTest} disabled={testing || !form.host || !form.user || !form.pass}
             style={{ padding: '11px 24px', borderRadius: 8, border: '1px solid #0f172a', background: '#fff', color: '#0f172a', fontSize: 14, fontWeight: 600, cursor: (!form.host || !form.user || !form.pass) ? 'default' : 'pointer', opacity: (!form.host || !form.user || !form.pass) ? 0.4 : 1 }}>

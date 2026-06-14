@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useMemo } from 'react';
+import { Download } from 'lucide-react';
 
 const PLAN_KEYS = ['free', 'starter', 'basic', 'pro', 'enterprise'];
 const PLAN_NAMES = { free: '免费版', starter: '入门版', basic: '基础版', pro: '专业版', enterprise: '企业版' };
@@ -136,7 +137,7 @@ export default function Admin() {
         </div>
         <button onClick={exportCSV} disabled={filtered.length === 0}
           style={{ padding: '8px 16px', borderRadius: 6, border: '1px solid #e5e7eb', background: '#fff', cursor: filtered.length ? 'pointer' : 'default', fontSize: 13, opacity: filtered.length ? 1 : 0.5 }}>
-          📥 导出 CSV
+          <Download size={14} style={{ marginRight: 4 }} /> 导出 CSV
         </button>
       </div>
 

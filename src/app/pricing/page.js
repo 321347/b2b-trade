@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { Check, X, Flame } from 'lucide-react';
 
 export default function Pricing() {
   const [billing, setBilling] = useState('monthly');
@@ -100,8 +101,8 @@ export default function Pricing() {
   ];
 
   function CellValue({ val }) {
-    if (val === true) return <span style={{ color: '#22c55e', fontWeight: 700, fontSize: 16 }}>✓</span>;
-    if (val === false) return <span style={{ color: '#d1d5db' }}>✗</span>;
+    if (val === true) return <Check size={16} color="#22c55e" />;
+    if (val === false) return <X size={16} color="#d1d5db" />;
     return <span>{val}</span>;
   }
 
@@ -138,7 +139,7 @@ export default function Pricing() {
             }}>
               {p.primary && (
                 <div style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', background: '#2563eb', color: '#fff', padding: '4px 16px', borderRadius: 12, fontSize: 12, fontWeight: 600 }}>
-                  🔥 最受欢迎
+                  <Flame size={14} style={{ marginRight: 2 }} /> 最受欢迎
                 </div>
               )}
               <h3 style={{ fontSize: 20, fontWeight: 700, color: '#0f172a', margin: p.primary ? '12px 0 8px' : '0 0 8px' }}>{p.name}</h3>
@@ -157,7 +158,7 @@ export default function Pricing() {
               <ul style={{ listStyle: 'none', padding: 0, textAlign: 'left', marginBottom: 28 }}>
                 {p.features.map(f => (
                   <li key={f.text} style={{ padding: '8px 0', fontSize: 14, color: f.included ? '#475569' : '#d1d5db', borderBottom: '1px solid #f5f5f5', display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span style={{ color: f.included ? '#22c55e' : '#d1d5db', fontWeight: 700, fontSize: 14, width: 16 }}>{f.included ? '✓' : '✗'}</span>
+                    {f.included ? <Check size={14} color="#22c55e" /> : <X size={14} color="#d1d5db" />}
                     <span style={{ fontWeight: f.bold ? 600 : 400 }}>{f.text}</span>
                   </li>
                 ))}

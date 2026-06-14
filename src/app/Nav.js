@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { Fish } from 'lucide-react';
 
 export default function Nav() {
   const [user, setUser] = useState(null);
@@ -18,7 +19,7 @@ export default function Nav() {
   return (
     <nav style={{ borderBottom: '1px solid #e5e7eb', padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 56, maxWidth: 1200, margin: '0 auto', background: '#fff' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
-        <a href="/" style={{ fontWeight: 800, fontSize: 18, color: '#1e3a5f', textDecoration: 'none', letterSpacing: '-0.5px' }}>🐟 鱼获科技</a>
+        <a href="/" style={{ fontWeight: 800, fontSize: 18, color: '#1e3a5f', textDecoration: 'none', letterSpacing: '-0.5px', display: 'flex', alignItems: 'center', gap: 4 }}><Fish size={20} /> 鱼获科技</a>
         {links.map(l => (
           <a key={l.href} href={l.href} className={l.hideMobile ? 'hide-mobile' : ''} style={{ fontSize: 14, color: '#64748b', textDecoration: 'none', fontWeight: 500 }}>{l.label}</a>
         ))}

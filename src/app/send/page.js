@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { XCircle, CheckCircle } from 'lucide-react';
 import { authHeaders } from '@/lib/utils';
 
 export default function Send() {
@@ -105,8 +106,8 @@ export default function Send() {
 
       {result && (
         <div style={{ marginTop: 20, padding: 16, borderRadius: 8, background: result.error ? '#fef2f2' : '#f0fdf4', border: '1px solid ' + (result.error ? '#fecaca' : '#bbf7d0') }}>
-          {result.error ? <div style={{ color: '#dc2626' }}>❌ {result.error}</div>
-            : <div style={{ color: '#15803d' }}>✅ 发送 {result.sent || result.results?.length} 封，失败 {result.failed || 0} 封
+          {result.error ? <div style={{ color: '#dc2626' }}><XCircle size={16} style={{ marginRight: 4 }} />{result.error}</div>
+            : <div style={{ color: '#15803d' }}><CheckCircle size={16} style={{ marginRight: 4 }} />发送 {result.sent || result.results?.length} 封，失败 {result.failed || 0} 封
               {result.results && <ul style={{ marginTop: 8, fontSize: 13 }}>{result.results.map((r,i) => <li key={i}>{r.email}: {r.status === 'ok' ? '已发送' : r.error}</li>)}</ul>}
             </div>}
         </div>
