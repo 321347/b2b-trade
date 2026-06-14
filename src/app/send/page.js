@@ -4,14 +4,6 @@ import { authHeaders } from '@/lib/utils';
 
 export default function Send() {
   const [auth, setAuth] = useState(false);
-  useEffect(() => {
-    if (!localStorage.getItem('user')) { window.location.href = '/login'; return; }
-    setAuth(true);
-    const sp = new URLSearchParams(window.location.search);
-    if (sp.get('to')) setForm(prev => ({ ...prev, email: sp.get('to') || '', company: sp.get('domain') || '' }));
-  }, []);
-  if (!auth) return <div style={{ padding: 40, textAlign: 'center', color: '#94a3b8' }}>请先登录...</div>;
-
   const [form, setForm] = useState({ email: '', name: '', company: '', subject: '', body: '' });
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -19,6 +11,14 @@ export default function Send() {
   const [bulkText, setBulkText] = useState('');
   const [bulkProgress, setBulkProgress] = useState(null);
   const [sendLimit, setSendLimit] = useState(null);
+
+  useEffect(() => {
+    if (!localStorage.getItem('user')) { window.location.href = '/login'; return; }
+    setAuth(true);
+    const sp = new URLSearchParams(window.location.search);
+    if (sp.get('to')) setForm(prev => ({ ...prev, email: sp.get('to') || '', company: sp.get('domain') || '' }));
+  }, []);
+  if (!auth) return <div style={{ padding: 40, textAlign: 'center', color: '#94a3b8' }}>请先登录...</div>;
 
   useEffect(() => {
     fetch('/api/dashboard', { headers: authHeaders() }).then(r => r.json()).then(d => {
