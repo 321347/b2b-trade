@@ -187,11 +187,15 @@ export default function SearchPage({ variant = 'home' }) {
               {showCustom ? '收起' : '—— 或自定义搜索 ——'}
             </button>
             {showCustom && (
-              <form onSubmit={handleCustomSearch} style={{ display: 'flex', gap: 8, maxWidth: 420, margin: '10px auto 0' }}>
+              <form onSubmit={handleCustomSearch} style={{ display: 'flex', gap: 8, maxWidth: 520, margin: '10px auto 0', alignItems: 'center' }}>
                 <input ref={inputRef} value={query} onChange={e => setQuery(e.target.value)}
                   placeholder="输入你的产品，如：压蒜器、宠物玩具..."
                   style={{ flex: 1, padding: '12px 16px', borderRadius: 8, border: '2px solid #e5e5e5', fontSize: 14, outline: 'none', background: '#fff', color: '#0f172a' }}
                   onFocus={e => e.target.style.borderColor = '#0f172a'} onBlur={e => e.target.style.borderColor = '#e5e5e5'} />
+                <select value={market} onChange={e => setMarket(e.target.value)}
+                  style={{ padding: '12px 8px', borderRadius: 8, border: '2px solid #e5e5e5', background: '#fff', fontSize: 13, color: '#334155', cursor: 'pointer', minWidth: 80 }}>
+                  {MARKETS.map(m => <option key={m} value={m}>{m}</option>)}
+                </select>
                 <button type="submit" disabled={loading}
                   style={{ padding: '12px 20px', borderRadius: 8, background: '#0f172a', color: '#fff', border: 'none', fontSize: 14, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>
                   {loading ? '搜索中' : '搜索'}
