@@ -33,7 +33,7 @@ export default function Register() {
         <input type="text" placeholder="姓名（选填）" value={name} onChange={e => setName(e.target.value)} style={inputStyle} />
         <input type="email" placeholder="邮箱" value={email} onChange={e => setEmail(e.target.value)} required style={inputStyle} />
         <input type="password" placeholder="密码" value={password} onChange={e => setPassword(e.target.value)} required minLength={6} style={inputStyle} />
-        <button type="submit" disabled={loading} style={{ width: '100%', padding: 12, borderRadius: 8, border: 'none', background: '#2563eb', color: '#fff', fontSize: 15, fontWeight: 600, cursor: 'pointer', boxShadow: '0 2px 8px rgba(37,99,235,0.2)', marginTop: 4 }}>{loading ? '注册中...' : '免费注册 · 送 25 次搜索'}</button>
+        <button type="submit" disabled={loading} style={{ width: '100%', padding: 12, borderRadius: 8, border: 'none', background: '#2563eb', color: '#fff', fontSize: 15, fontWeight: 600, cursor: 'pointer', boxShadow: '0 2px 8px rgba(37,99,235,0.2)', marginTop: 4 }}>{loading ? '注册中...' : '免费注册 · 送 10 次搜索'}</button>
       </form>
       <p style={{ textAlign: 'center', fontSize: 14, color: '#94a3b8', marginTop: 16 }}>已有账号？<a href="/login" style={{ color: '#2563eb', fontWeight: 500 }}>登录</a></p>
     </div>

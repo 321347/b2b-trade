@@ -184,7 +184,7 @@ export default function SearchPage({ variant = 'home' }) {
           </div>
         )}
 
-        {isHome && !user && !hasResults && <p style={{ fontSize: 13, color: '#94a3b8', marginTop: 20 }}>注册即送 25 次免费搜索</p>}
+        {isHome && !user && !hasResults && <p style={{ fontSize: 13, color: '#94a3b8', marginTop: 20 }}>注册即送 10 次免费搜索</p>}
       </div>
 
       {showLoginTip && (
@@ -298,7 +298,7 @@ export default function SearchPage({ variant = 'home' }) {
           {!user && companies.length > 0 && (
             <div style={{ textAlign: 'center', marginTop: 28, padding: '24px', background: '#fafafa', borderRadius: 8, border: '1px solid #e5e5e5' }}>
               <div style={{ fontSize: 16, fontWeight: 600, color: '#0f172a', marginBottom: 8 }}>注册查看完整邮箱并发送开发信</div>
-              <div style={{ fontSize: 13, color: '#94a3b8', marginBottom: 16 }}>注册即送 25 次免费搜索</div>
+              <div style={{ fontSize: 13, color: '#94a3b8', marginBottom: 16 }}>注册即送 10 次免费搜索</div>
               <button onClick={handleLogin} style={{ background: '#0f172a', color: '#fff', border: 'none', padding: '12px 36px', borderRadius: 6, cursor: 'pointer', fontSize: 15, fontWeight: 600 }}>免费注册</button>
             </div>
           )}

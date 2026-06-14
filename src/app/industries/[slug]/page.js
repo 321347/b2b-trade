@@ -115,7 +115,7 @@ export default function IndustryPage({ params }) {
       {/* CTA */}
       <div style={{ textAlign: 'center', background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)', borderRadius: 16, padding: '48px 24px', color: '#fff', marginBottom: 40 }}>
         <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12 }}>开始找{industry.zh}海外客户</h2>
-        <p style={{ fontSize: 15, opacity: 0.9, marginBottom: 24 }}>注册即送 25 次免费搜索，</p>
+        <p style={{ fontSize: 15, opacity: 0.9, marginBottom: 24 }}>注册即送 10 次免费搜索，</p>
         <Link href={`/register?industry=${slug}`}
           style={{ display: 'inline-block', padding: '14px 40px', background: '#fff', color: '#2563eb', fontSize: 16, fontWeight: 600, borderRadius: 8, textDecoration: 'none' }}>
           免费注册

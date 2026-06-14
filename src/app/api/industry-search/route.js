@@ -174,7 +174,7 @@ export async function GET(req) {
   const authHeader = req.headers.get('authorization');
   if (!authHeader) {
     const ipDaily = checkRateLimit('anonSearch', ip);
-    if (!ipDaily.allowed) return NextResponse.json({ error: '免费搜索次数已用完，请注册获取 25 次搜索', needLogin: true }, { status: 429 });
+    if (!ipDaily.allowed) return NextResponse.json({ error: '免费搜索次数已用完，请注册获取 10 次搜索', needLogin: true }, { status: 429 });
   }
 
   const queryTerms = q.split(/[\s,，]+/).filter(t => t.length > 0);

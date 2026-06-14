@@ -2,7 +2,7 @@ import { getSupabase } from '@/lib/supabase';
 
 const supabase = getSupabase();
 
-const FREE_QUOTA = 25;
+const FREE_QUOTA = 10;
 
 // 从 Supabase user metadata 读取配额
 export async function getUserQuota(req) {

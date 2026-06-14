@@ -4,7 +4,7 @@ import { checkRateLimit } from '@/lib/rate-limit';
 
 const supabase = getSupabase();
 
-const FREE_QUOTA = 25;
+const FREE_QUOTA = 10;
 
 export async function POST(req) {
   const ip = req.headers.get('x-forwarded-for') || 'unknown';
