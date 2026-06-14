@@ -35,7 +35,8 @@ CREATE TABLE IF NOT EXISTS email_tracks (
   subject TEXT DEFAULT '',
   sent_at TIMESTAMPTZ DEFAULT now(),
   opened_at TIMESTAMPTZ,
-  opened INTEGER DEFAULT 0
+  opened INTEGER DEFAULT 0,
+  follow_up_sent INTEGER DEFAULT 0
 );
 
 ALTER TABLE email_tracks ENABLE ROW LEVEL SECURITY;

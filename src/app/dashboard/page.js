@@ -143,6 +143,19 @@ export default function Dashboard() {
             </div>
           )}
           {tracks.sent === 0 && <div style={{ fontSize: 13, color: '#94a3b8' }}>暂无邮件发送记录</div>}
+          {tracks.tracks?.filter(t => !t.opened && !t.follow_up_sent).length > 0 && (
+            <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid #f0f0f0' }}>
+              <button onClick={async () => {
+                const r = await fetch('/api/track/follow-up', { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } });
+                const d = await r.json();
+                if (d.sent > 0) { alert(`已发送 ${d.sent} 封跟进邮件`); fetch('/api/track/stats', { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } }).then(r => r.json()).then(d => setTracks(d)); }
+                else alert(d.error || '暂无可跟进邮件（需发送超过 3 天且未打开）');
+              }} style={{ padding: '8px 16px', borderRadius: 6, border: '1px solid #2563eb', background: '#fff', color: '#2563eb', fontSize: 13, cursor: 'pointer', fontWeight: 500 }}>
+                发送跟进邮件（{tracks.tracks.filter(t => !t.opened && !t.follow_up_sent).length} 封可跟进）
+              </button>
+              <span style={{ fontSize: 11, color: '#94a3b8', marginLeft: 8 }}>仅 Pro/Enterprise 可用，每天自动执行一次</span>
+            </div>
+          )}
         </div>
       )}
 
