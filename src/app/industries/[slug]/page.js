@@ -108,7 +108,7 @@ export default function IndustryPage({ params }) {
           </div>
         ))}
         <p style={{ marginTop: 16, fontSize: 15, color: '#333', fontWeight: 500 }}>
-          ✅ 鱼获科技帮你直接从 15+ 数据源聚合目标客户，精准找到采购决策人，主动出击。
+          ✅ 跨境蜂帮你直接从 15+ 数据源聚合目标客户，精准找到采购决策人，主动出击。
         </p>
       </div>
 

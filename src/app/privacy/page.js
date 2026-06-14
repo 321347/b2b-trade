@@ -1,4 +1,4 @@
-export const metadata = { title: '隐私政策 - 鱼获科技' };
+export const metadata = { title: '隐私政策 - 跨境蜂' };
 
 export default function Privacy() {
   return (

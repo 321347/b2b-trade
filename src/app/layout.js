@@ -8,16 +8,16 @@ export const icons = {
 
 export const metadata = {
   title: {
-    default: '鱼获科技 - 外贸获客工具 | 智能找海外客户 + 自动发开发信',
-    template: '%s | 鱼获科技',
+    default: '跨境蜂 - 外贸获客工具 | 智能找海外客户 + 自动发开发信',
+    template: '%s | 跨境蜂',
   },
-  description: '鱼获科技是一站式B2B外贸获客平台。输入产品名称（如压蒜器、宠物玩具），AI自动匹配海外采购商并生成个性化开发信。邮箱打码，注册查看完整信息。注册即送10次免费搜索。',
+  description: '跨境蜂是一站式B2B外贸获客平台。输入产品名称（如压蒜器、宠物玩具），AI自动匹配海外采购商并生成个性化开发信。邮箱打码，注册查看完整信息。注册即送10次免费搜索。',
   keywords: '外贸获客,外贸找客户,B2B获客工具,外贸开发信,外贸邮箱查找,智能获客,外贸客户搜索,找海外采购商,找国外买家',
   openGraph: {
-    title: '鱼获科技 - 外贸获客工具 | 智能找海外客户',
+    title: '跨境蜂 - 外贸获客工具 | 智能找海外客户',
     description: '聚合15+全球数据源，输入域名找采购决策人邮箱，自动发开发信，回复追踪，一站式搞定外贸获客。',
     url: 'https://b2b.toolbase.fun',
-    siteName: '鱼获科技',
+    siteName: '跨境蜂',
     type: 'website',
     locale: 'zh_CN',
   },
@@ -26,7 +26,7 @@ export const metadata = {
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
-  name: '鱼获科技',
+  name: '跨境蜂',
   applicationCategory: 'BusinessApplication',
   operatingSystem: 'Web',
   description: '一站式B2B外贸获客平台，智能找客户、自动发开发信、回复追踪、数据分析',
@@ -54,7 +54,7 @@ export default function RootLayout({ children }) {
             <a href="/industries" style={{ color: '#94a3b8', textDecoration: 'none', margin: '0 12px' }}>行业品类</a>
             <a href="/pricing" style={{ color: '#94a3b8', textDecoration: 'none', margin: '0 12px' }}>定价</a>
           </div>
-          鱼获科技 © 2026 · <a href="/privacy" style={{color:'#94a3b8',textDecoration:'none'}}>隐私政策</a> · <a href="/tos" style={{color:'#94a3b8',textDecoration:'none'}}>服务条款</a>
+          跨境蜂 © 2026 · <a href="/privacy" style={{color:'#94a3b8',textDecoration:'none'}}>隐私政策</a> · <a href="/tos" style={{color:'#94a3b8',textDecoration:'none'}}>服务条款</a>
         </footer>
       </body>
     </html>

@@ -145,7 +145,7 @@ ${caseText}
 ${tpl.callToAction}
 
 Best regards,
-鱼获科技`;
+跨境蜂`;
 
   return NextResponse.json({
     research,
