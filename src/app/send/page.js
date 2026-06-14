@@ -44,7 +44,8 @@ export default function Send() {
         if (d.ok) ok.push(t.email); else fail.push({ email: t.email, error: d.error });
       } catch { fail.push({ email: t.email, error: '网络错误' }); }
       setBulkProgress({ sent: ok.length + fail.length, total: targets.length });
-      await new Promise(r => setTimeout(r, 1500));
+      // 每封间隔 5-10 秒，防止邮箱封禁
+      await new Promise(r => setTimeout(r, 5000 + Math.random() * 5000));
     }
     setResult({ sent: ok.length, failed: fail.length, details: fail });
     setLoading(false); setBulkProgress(null);
@@ -56,7 +57,7 @@ export default function Send() {
       <p style={{ color: '#94a3b8', marginBottom: 24 }}>
         <button onClick={() => { setBulkMode(false); setResult(null); }} style={{ background: bulkMode ? '#f1f5f9' : '#2563eb', color: bulkMode ? '#64748b' : '#fff', border: 'none', padding: '6px 14px', borderRadius: 6, cursor: 'pointer', fontSize: 13, marginRight: 8 }}>单封</button>
         <button onClick={() => { setBulkMode(true); setResult(null); }} style={{ background: bulkMode ? '#2563eb' : '#f1f5f9', color: bulkMode ? '#fff' : '#64748b', border: 'none', padding: '6px 14px', borderRadius: 6, cursor: 'pointer', fontSize: 13 }}>批量</button>
-        <span style={{ marginLeft: 12, fontSize: 12, color: '#94a3b8' }}>每封间隔 1.5 秒，避免触发邮箱限频</span>
+        <span style={{ marginLeft: 12, fontSize: 12, color: '#94a3b8' }}>每封间隔 5-10 秒，防止邮箱封禁</span>
       </p>
 
       {!bulkMode ? (

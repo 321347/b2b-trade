@@ -75,9 +75,7 @@ export async function POST(req) {
       } catch (e) {
         results.push({ email: recipient, status: 'fail', error: e.message });
       }
-      // 间隔 3-7 秒随机抖动，避免被判群发（QQ/163 建议更久，但在 Vercel 10s 超时限制下取折衷）
-      const delay = 3000 + Math.floor(Math.random() * 4000);
-      await new Promise(r => setTimeout(r, delay));
+      await new Promise(r => setTimeout(r, 500));
     }
     const ok = results.filter(r => r.status === 'ok').length;
     if (ok > 0) await recordSend(req, ok);

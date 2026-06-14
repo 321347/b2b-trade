@@ -84,14 +84,17 @@ export default function SearchPage({ variant = 'home' }) {
     companies.forEach((c, i) => { c.emails.forEach(email => { targets.push({ email, company: c.company, subject: emails[i]?.customSubject, body: emails[i]?.customBody }); }); });
     if (targets.length === 0) return;
     setSending(true); setSent([]);
-    const CHUNK = 3; const allResults = [];
-    for (let i = 0; i < targets.length; i += CHUNK) {
-      const chunk = targets.slice(i, i + CHUNK);
+    const results = [];
+    for (let i = 0; i < targets.length; i++) {
+      const t = targets[i];
       try {
-        const r = await fetch('/api/send', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ targets: chunk }) });
+        const r = await fetch('/api/send', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ to: t.email, name: t.name, company: t.company, subject: t.subject, body: t.body }) });
         const d = await r.json();
-        if (d.results) { allResults.push(...d.results); setSent([...allResults]); }
-      } catch { allResults.push(...chunk.map(t => ({ email: t.email, status: 'fail' }))); setSent([...allResults]); }
+        results.push({ email: t.email, status: d.ok ? 'ok' : 'fail' });
+      } catch { results.push({ email: t.email, status: 'fail' }); }
+      setSent([...results]);
+      // 每封间隔 5-10 秒，防止邮箱封禁
+      if (i < targets.length - 1) await new Promise(r => setTimeout(r, 5000 + Math.random() * 5000));
     }
     setSending(false);
   }
@@ -213,8 +216,11 @@ export default function SearchPage({ variant = 'home' }) {
 
       {sending && (
         <div style={{ textAlign: 'center', padding: '24px 20px', marginBottom: 16 }}>
-          <div style={{ fontSize: 15, fontWeight: 600, color: '#0f172a' }}>正在发送...</div>
-          <div style={{ fontSize: 13, color: '#94a3b8', marginTop: 4 }}>共 {companies.reduce((a, c) => a + c.emails.length, 0)} 封邮件，请稍候</div>
+          <div style={{ fontSize: 15, fontWeight: 600, color: '#0f172a', marginBottom: 8 }}>正在发送 {sent.filter(s => s.status === 'ok').length}/{companies.reduce((a, c) => a + c.emails.length, 0)}</div>
+          <div style={{ width: '100%', height: 4, background: '#f3f3f3', borderRadius: 2, overflow: 'hidden' }}>
+            <div style={{ height: '100%', background: '#0f172a', borderRadius: 2, transition: 'width 0.3s', width: `${(sent.length / companies.reduce((a, c) => a + c.emails.length, 0)) * 100}%` }} />
+          </div>
+          <div style={{ fontSize: 13, color: '#94a3b8', marginTop: 4 }}>每封间隔 5-10 秒，防止邮箱封禁</div>
         </div>
       )}
 
