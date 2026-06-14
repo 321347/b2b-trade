@@ -2,6 +2,11 @@ import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { requireAuth } from '@/lib/auth';
 import { checkRateLimit } from '@/lib/rate-limit';
+import { getSmtpConfig } from '@/lib/smtp-store';
+
+function safeName(s) {
+  return (s || '').replace(/[\r\n\t\\"]/g, '').replace(/[^\w一-鿿\s·@.(),&+\-]/g, '').slice(0, 100);
+}
 
 function makeTransporter(smtp) {
   if (!smtp?.host || !smtp?.user || !smtp?.pass) return null;
@@ -21,13 +26,15 @@ export async function POST(req) {
   if (!rl.allowed) return NextResponse.json({ error: '发送太频繁，请稍后再试' }, { status: 429 });
 
   const body = await req.json();
-  const { smtp } = body;
+
+  // 从服务端读取用户 SMTP 配置
+  const smtp = await getSmtpConfig(user.id);
 
   // 用户自有SMTP优先，否则用系统默认
   let defaultFrom;
   const userTransporter = makeTransporter(smtp);
   if (userTransporter) {
-    defaultFrom = smtp.fromName ? `"${smtp.fromName}" <${smtp.user}>` : smtp.user;
+    defaultFrom = smtp.fromName ? `"${safeName(smtp.fromName)}" <${smtp.user}>` : smtp.user;
   } else if (process.env.SMTP_HOST) {
     defaultFrom = process.env.SMTP_FROM || process.env.SMTP_USER;
   }

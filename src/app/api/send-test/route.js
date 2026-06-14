@@ -24,7 +24,7 @@ export async function POST(req) {
     });
 
     await transporter.sendMail({
-      from: smtp.fromName ? `"${smtp.fromName}" <${smtp.user}>` : smtp.user,
+      from: smtp.fromName ? `"${(smtp.fromName || '').replace(/[\r\n\t\\"]/g, '').slice(0, 100)}" <${smtp.user}>` : smtp.user,
       to: to || smtp.user,
       subject: '鱼获科技 · 邮箱配置测试',
       html: '<p>这是一封测试邮件。如果你收到这封邮件，说明邮箱配置成功。</p><p style="color:#94a3b8">— 鱼获科技</p>',

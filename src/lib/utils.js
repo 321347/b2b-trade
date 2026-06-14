@@ -34,11 +34,6 @@ export function saveHistory(term) {
   S.setItem('searchHistory', JSON.stringify(h.slice(0, 8)));
 }
 
-export function getSmtp() {
-  if (!S) return null;
-  try { return JSON.parse(S.getItem('smtpConfig') || 'null'); } catch { return null; }
-}
-
 export function authHeaders() {
   const h = { 'Content-Type': 'application/json' };
   if (S) {

@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { maskEmail, loadHistory, saveHistory, getSmtp, authHeaders, MARKETS, INDUSTRY_GROUPS } from '@/lib/utils';
+import { maskEmail, loadHistory, saveHistory, authHeaders, MARKETS, INDUSTRY_GROUPS } from '@/lib/utils';
 
 export default function SearchPage({ variant = 'home' }) {
   const [user, setUser] = useState(null);
@@ -24,8 +24,10 @@ export default function SearchPage({ variant = 'home' }) {
 
   useEffect(() => {
     const u = localStorage.getItem('user');
-    if (u) setUser(JSON.parse(u));
-    setSmtpConfigured(!!getSmtp());
+    if (u) {
+      setUser(JSON.parse(u));
+      fetch('/api/smtp-config', { headers: authHeaders() }).then(r => r.json()).then(d => setSmtpConfigured(!!d.config));
+    }
   }, []);
 
   async function doSearch(q) {
@@ -39,7 +41,7 @@ export default function SearchPage({ variant = 'home' }) {
     setCompanies(d.companies);
     setSuggestions(d.suggestions || []);
     if (d.quota) setQuota(d.quota);
-    if (d.companies.length > 0) {
+    if (d.companies.length > 0 && user) {
       const generated = await Promise.all(d.companies.map(c =>
         fetch('/api/generate-email', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ company: c.company, industry: q, market, domain: c.domain, contactName: (c.emails[0] || '').split('@')[0].split('.')[0] }) }).then(r => r.json())
       ));
@@ -72,8 +74,7 @@ export default function SearchPage({ variant = 'home' }) {
 
   async function handleSend() {
     if (!user) { setShowLoginTip(true); return; }
-    const smtp = getSmtp();
-    if (!smtp) { window.location.href = '/email-settings'; return; }
+    if (!smtpConfigured) { window.location.href = '/email-settings'; return; }
     const tasks = [];
     companies.forEach((c, i) => { c.emails.forEach(email => { tasks.push({ to: email, company: c.company, subject: emails[i]?.customSubject, body: emails[i]?.customBody }); }); });
     if (tasks.length === 0) return;
@@ -81,7 +82,7 @@ export default function SearchPage({ variant = 'home' }) {
     const results = [];
     for (const t of tasks) {
       try {
-        const r = await fetch('/api/send', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ ...t, smtp }) });
+        const r = await fetch('/api/send', { method: 'POST', headers: authHeaders(), body: JSON.stringify(t) });
         const d = await r.json();
         results.push({ email: t.to, status: d.ok ? 'ok' : 'fail' });
       } catch { results.push({ email: t.to, status: 'fail' }); }

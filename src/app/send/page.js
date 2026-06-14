@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { authHeaders, getSmtp } from '@/lib/utils';
+import { authHeaders } from '@/lib/utils';
 
 export default function Send() {
   const [auth, setAuth] = useState(false);
@@ -21,8 +21,7 @@ export default function Send() {
     if (!form.email || !form.email.includes('@')) { setResult({ error: '请输入有效邮箱' }); return; }
     setLoading(true); setResult(null);
     try {
-      const smtp = getSmtp();
-      const r = await fetch('/api/send', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ to: form.email, name: form.name, company: form.company, subject: form.subject || 'Business Inquiry', body: form.body, smtp }) });
+      const r = await fetch('/api/send', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ to: form.email, name: form.name, company: form.company, subject: form.subject || 'Business Inquiry', body: form.body }) });
       setResult(await r.json());
     } catch { setResult({ error: '发送失败' }); }
     setLoading(false);
@@ -37,8 +36,7 @@ export default function Send() {
     if (!targets.length || !targets[0].email.includes('@')) { setResult({ error: '格式错误' }); return; }
     setLoading(true); setResult(null);
     try {
-      const smtp = getSmtp();
-      const r = await fetch('/api/send', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ targets, smtp }) });
+      const r = await fetch('/api/send', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ targets }) });
       setResult(await r.json());
     } catch { setResult({ error: '发送失败' }); }
     setLoading(false);

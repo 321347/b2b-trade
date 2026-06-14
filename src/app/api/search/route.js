@@ -1,19 +1,26 @@
 import { NextResponse } from 'next/server';
+import { requireAuth } from '@/lib/auth';
 import { searchAllProviders } from '@/lib/providers';
 import { checkDomainMX } from '@/lib/guesser';
-import { getCached, setCached, getQuotaState, incrementQuota, getQuotaSummary } from '@/lib/cache';
+import { getCachedAsync, setCached, getQuotaState, incrementQuota, getQuotaSummary, loadQuotaFromDB } from '@/lib/cache';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(req) {
+  const { user, error } = await requireAuth(req);
+  if (error) return error;
+
   const { domain } = await req.json();
   if (!domain) return NextResponse.json({ error: 'Domain required' }, { status: 400 });
 
   const cleanDomain = domain.toLowerCase().trim().replace(/^https?:\/\//, '').replace(/\/.*$/, '');
   const startTime = Date.now();
 
-  // === 1. 缓存命中 ===
-  const cached = getCached(cleanDomain);
+  // 从 Supabase 加载持久化配额
+  await loadQuotaFromDB();
+
+  // === 1. 缓存命中（内存 + Supabase） ===
+  const cached = await getCachedAsync(cleanDomain);
   if (cached) {
     return NextResponse.json({
       ...cached,

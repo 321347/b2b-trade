@@ -9,7 +9,15 @@ export default function Register() {
     try {
       const r = await fetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password, name }) });
       const d = await r.json();
-      if (d.ok) window.location.href = '/login?registered=1';
+      if (d.ok) {
+        if (d.session) {
+          localStorage.setItem('user', JSON.stringify(d.user));
+          localStorage.setItem('token', d.session.access_token);
+          window.location.href = '/';
+        } else {
+          window.location.href = '/login?registered=1';
+        }
+      }
       else setError(d.error || 'Registration failed');
     } catch { setError('网络错误，请重试'); }
     setLoading(false);

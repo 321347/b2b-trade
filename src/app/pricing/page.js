@@ -32,7 +32,7 @@ export default function Pricing() {
         { text: '自定义品类', included: true },
         { text: 'API 接入', included: false },
       ],
-      btn: '立即升级', href: '/register?plan=pro', primary: true, style: 'primary',
+      btn: '立即升级', onClick: () => setShowContact(true), primary: true, style: 'primary',
     },
     {
       name: '企业版', price: 699, yearlyPrice: 559, period: '/月',
@@ -182,7 +182,8 @@ export default function Pricing() {
             <h3 style={{ fontSize: 20, fontWeight: 700, margin: '0 0 8px', color: '#0f172a' }}>联系专属客服</h3>
             <p style={{ fontSize: 14, color: '#64748b', margin: '0 0 16px' }}>扫码添加企业微信，获取企业版详情和定制方案</p>
             <img src="/78993206bd28b9b4f6a7a2929c33855b.jpg" alt="企业微信二维码" style={{ width: '100%', borderRadius: 12, display: 'block' }} />
-            <p style={{ fontSize: 12, color: '#94a3b8', margin: '12px 0 0' }}>工作日 9:00-18:00 在线，1小时内回复</p>
+            <p style={{ fontSize: 12, color: '#94a3b8', margin: '12px 0 8px' }}>工作日 9:00-18:00 在线，1小时内回复</p>
+            <p style={{ fontSize: 12, color: '#64748b', margin: 0 }}>支持微信/支付宝付款，可开票</p>
           </div>
         </div>
       )}

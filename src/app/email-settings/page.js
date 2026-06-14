@@ -93,8 +93,8 @@ export default function EmailSettings() {
     const u = localStorage.getItem('user');
     if (!u) { window.location.href = '/login'; return; }
     setUser(JSON.parse(u));
-    const cfg = localStorage.getItem('smtpConfig');
-    if (cfg) setForm(JSON.parse(cfg));
+    fetch('/api/smtp-config', { headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') } })
+      .then(r => r.json()).then(d => { if (d.config) setForm(d.config); });
   }, []);
 
   function update(field, value) {
@@ -113,8 +113,12 @@ export default function EmailSettings() {
     setExpanded(expanded === key ? null : key);
   }
 
-  function handleSave() {
-    localStorage.setItem('smtpConfig', JSON.stringify(form));
+  async function handleSave() {
+    await fetch('/api/smtp-config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+      body: JSON.stringify(form),
+    });
     setSaved(true);
   }
 
