@@ -16,5 +16,10 @@ export async function POST(req) {
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) return NextResponse.json({ error: '邮箱或密码错误' }, { status: 401 });
-  return NextResponse.json({ ok: true, user: data.user, session: data.session });
+  const meta = data.user?.user_metadata || {};
+  return NextResponse.json({
+    ok: true,
+    user: { id: data.user.id, email: data.user.email, name: meta.name || email.split('@')[0], plan: meta.plan || 'free' },
+    session: data.session,
+  });
 }
