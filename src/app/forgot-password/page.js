@@ -25,8 +25,10 @@ export default function ForgotPassword() {
     <div style={{ maxWidth: 400, margin: '80px auto', padding: 20 }}>
       <h1 style={{ fontSize: 22, fontWeight: 700, textAlign: 'center', marginBottom: 24, color: '#0f172a' }}>找回密码</h1>
       {sent ? (
-        <div style={{ textAlign: 'center', padding: 24, background: '#f0fdf4', borderRadius: 8, color: '#16a34a', fontSize: 14 }}>
-          重置密码链接已发送到 {email}，请检查邮箱（可能在垃圾邮件中）。
+        <div style={{ textAlign: 'center', padding: 24, background: '#f0fdf4', borderRadius: 8 }}>
+          <p style={{ color: '#16a34a', fontSize: 14, margin: '0 0 8px' }}>重置密码链接已发送到 {email}</p>
+          <p style={{ color: '#64748b', fontSize: 13, margin: '0 0 4px' }}>请检查邮箱（可能在垃圾邮件中）</p>
+          <p style={{ color: '#94a3b8', fontSize: 12, margin: 0 }}>如 5 分钟内未收到，请发邮件至 admin@toolbase.fun 联系客服手动重置</p>
         </div>
       ) : (
         <form onSubmit={handleSubmit}>

@@ -32,6 +32,8 @@ export default function Dashboard() {
     }
   }, [user]);
 
+  const isNew = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('new') === '1';
+
   if (!user || !data) return <div style={{ padding: 40, textAlign: 'center', color: '#94a3b8' }}>加载中...</div>;
 
   const { quota, sendLimit } = data;
@@ -49,6 +51,18 @@ export default function Dashboard() {
           <button onClick={() => { localStorage.removeItem('user'); localStorage.removeItem('token'); window.location.href = '/'; }} style={{ background: '#f1f5f9', border: 'none', color: '#64748b', padding: '8px 18px', borderRadius: 6, cursor: 'pointer', fontSize: 13 }}>退出</button>
         </div>
       </div>
+
+      {/* 新用户引导 */}
+      {isNew && (
+        <div style={{ background: '#eff6ff', borderRadius: 10, padding: 20, border: '1px solid #bfdbfe', marginBottom: 20 }}>
+          <div style={{ fontSize: 16, fontWeight: 700, color: '#1e40af', marginBottom: 6 }}>注册成功！</div>
+          <div style={{ fontSize: 14, color: '#3b82f6', lineHeight: 1.8 }}>
+            1. 去 <a href="/email-settings" style={{ color: '#1d4ed8', fontWeight: 600 }}>邮箱设置</a> 配置你的 SMTP 发信邮箱<br/>
+            2. 回到 <a href="/" style={{ color: '#1d4ed8', fontWeight: 600 }}>首页</a> 搜索海外采购商<br/>
+            3. 一键发送开发信，追踪客户打开情况
+          </div>
+        </div>
+      )}
 
       {/* 配额卡片 */}
       <div style={{ background: '#fff', borderRadius: 10, padding: 24, border: '1px solid #e5e7eb', marginBottom: 20 }}>
@@ -118,7 +132,10 @@ export default function Dashboard() {
                     {t.opened ? (
                       <span style={{ color: '#16a34a', fontWeight: 500 }}>已打开 {new Date(t.opened_at).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}</span>
                     ) : (
-                      <span style={{ color: '#d1d5db' }}>未打开</span>
+                      <>
+                        <span style={{ color: '#d1d5db' }}>未打开</span>
+                        <a href={`/send?to=${encodeURIComponent(t.recipient)}&domain=${encodeURIComponent(t.domain)}`} style={{ color: '#2563eb', fontSize: 12, textDecoration: 'none', marginLeft: 4 }}>跟进 →</a>
+                      </>
                     )}
                   </div>
                 </div>

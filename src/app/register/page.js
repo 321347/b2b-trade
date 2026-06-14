@@ -13,7 +13,7 @@ export default function Register() {
         if (d.session) {
           localStorage.setItem('user', JSON.stringify(d.user));
           localStorage.setItem('token', d.session.access_token);
-          window.location.href = '/';
+          window.location.href = '/dashboard?new=1';
         } else {
           window.location.href = '/login?registered=1';
         }

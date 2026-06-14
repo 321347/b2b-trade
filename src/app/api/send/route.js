@@ -70,7 +70,7 @@ export async function POST(req) {
         if (!transporter) { results.push({ email: recipient, status: 'fail', error: 'No SMTP configured' }); continue; }
         const from = defaultFrom || process.env.SMTP_USER;
         const html = buildHtml(t.body || body.body, from, trackId, baseUrl);
-        const info = await transporter.sendMail({ from, to: recipient, subject: t.subject || body.subject || 'Business Inquiry', html });
+        const info = await transporter.sendMail({ from, replyTo: from, to: recipient, subject: t.subject || body.subject || 'Business Inquiry', html });
         results.push({ email: recipient, status: 'ok', messageId: info.messageId });
       } catch (e) {
         results.push({ email: recipient, status: 'fail', error: e.message });
@@ -109,7 +109,7 @@ export async function POST(req) {
   let lastError;
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
-      const info = await transporter.sendMail({ from, to: recipient, subject: subject || 'Business Inquiry', html });
+      const info = await transporter.sendMail({ from, replyTo: from, to: recipient, subject: subject || 'Business Inquiry', html });
       await recordSend(req);
       return NextResponse.json({ ok: true, results: [{ email: recipient, status: 'ok', messageId: info.messageId }], sent: 1, failed: 0 });
     } catch (e) {

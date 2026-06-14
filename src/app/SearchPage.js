@@ -32,6 +32,14 @@ export default function SearchPage({ variant = 'home' }) {
       const plan = parsed.user_metadata?.plan || 'free';
       setUserPlan(plan);
       fetch('/api/smtp-config', { headers: authHeaders() }).then(r => r.json()).then(d => setSmtpConfigured(!!d.config));
+      // 从 Supabase 同步搜索历史
+      fetch('/api/user/history', { headers: authHeaders() }).then(r => r.json()).then(d => {
+        if (d.history?.length > 0) {
+          const local = loadHistory();
+          const merged = [...new Set([...local, ...d.history])].slice(0, 12);
+          localStorage.setItem('searchHistory', JSON.stringify(merged));
+        }
+      }).catch(() => {});
     }
   }, []);
 
@@ -40,6 +48,7 @@ export default function SearchPage({ variant = 'home' }) {
     setQuery(q);
     setLoading(true); setSuggestions([]); setCopiedAll(false);
     saveHistory(q);
+    fetch('/api/user/history', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ history: loadHistory() }) }).catch(() => {});
     const r = await fetch(`/api/industry-search?q=${encodeURIComponent(q)}&market=${market}`);
     const d = await r.json();
     if (d.needLogin) { setShowLoginTip(true); setLoading(false); return; }

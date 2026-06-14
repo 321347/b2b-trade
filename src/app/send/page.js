@@ -4,7 +4,12 @@ import { authHeaders } from '@/lib/utils';
 
 export default function Send() {
   const [auth, setAuth] = useState(false);
-  useEffect(() => { if (!localStorage.getItem('user')) window.location.href = '/login'; else setAuth(true); }, []);
+  useEffect(() => {
+    if (!localStorage.getItem('user')) { window.location.href = '/login'; return; }
+    setAuth(true);
+    const sp = new URLSearchParams(window.location.search);
+    if (sp.get('to')) setForm(prev => ({ ...prev, email: sp.get('to') || '', company: sp.get('domain') || '' }));
+  }, []);
   if (!auth) return <div style={{ padding: 40, textAlign: 'center', color: '#94a3b8' }}>请先登录...</div>;
 
   const [form, setForm] = useState({ email: '', name: '', company: '', subject: '', body: '' });
@@ -13,6 +18,13 @@ export default function Send() {
   const [bulkMode, setBulkMode] = useState(false);
   const [bulkText, setBulkText] = useState('');
   const [bulkProgress, setBulkProgress] = useState(null);
+  const [sendLimit, setSendLimit] = useState(null);
+
+  useEffect(() => {
+    fetch('/api/dashboard', { headers: authHeaders() }).then(r => r.json()).then(d => {
+      if (d.sendLimit) setSendLimit(d.sendLimit);
+    }).catch(() => {});
+  }, []);
 
   const update = (k, v) => setForm(prev => ({ ...prev, [k]: v }));
   const inp = (k, ph, type) => <input type={type || 'text'} placeholder={ph} value={form[k]} onChange={e => update(k, e.target.value)} style={{ width:'100%', padding:10, borderRadius:8, border:'1px solid #d1d5db', background:'#fff', fontSize:14, marginBottom:10, outline:'none' }} />;
@@ -54,11 +66,18 @@ export default function Send() {
   return (
     <div style={{ maxWidth: 700, margin: '40px auto', padding: '0 20px' }}>
       <h1 style={{ fontSize: 28, fontWeight: 700, color: '#0f172a', marginBottom: 8 }}>发信</h1>
-      <p style={{ color: '#94a3b8', marginBottom: 24 }}>
-        <button onClick={() => { setBulkMode(false); setResult(null); }} style={{ background: bulkMode ? '#f1f5f9' : '#2563eb', color: bulkMode ? '#64748b' : '#fff', border: 'none', padding: '6px 14px', borderRadius: 6, cursor: 'pointer', fontSize: 13, marginRight: 8 }}>单封</button>
-        <button onClick={() => { setBulkMode(true); setResult(null); }} style={{ background: bulkMode ? '#2563eb' : '#f1f5f9', color: bulkMode ? '#fff' : '#64748b', border: 'none', padding: '6px 14px', borderRadius: 6, cursor: 'pointer', fontSize: 13 }}>批量</button>
-        <span style={{ marginLeft: 12, fontSize: 12, color: '#94a3b8' }}>每封间隔 2-3 分钟，防止邮箱封禁</span>
-      </p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <button onClick={() => { setBulkMode(false); setResult(null); }} style={{ background: bulkMode ? '#f1f5f9' : '#2563eb', color: bulkMode ? '#64748b' : '#fff', border: 'none', padding: '6px 14px', borderRadius: 6, cursor: 'pointer', fontSize: 13 }}>单封</button>
+          <button onClick={() => { setBulkMode(true); setResult(null); }} style={{ background: bulkMode ? '#2563eb' : '#f1f5f9', color: bulkMode ? '#fff' : '#64748b', border: 'none', padding: '6px 14px', borderRadius: 6, cursor: 'pointer', fontSize: 13 }}>批量</button>
+          <span style={{ fontSize: 12, color: '#94a3b8' }}>每封间隔 2-3 分钟</span>
+        </div>
+        {sendLimit && (
+          <span style={{ fontSize: 13, color: sendLimit.allowed ? '#64748b' : '#dc2626', fontWeight: 500 }}>
+            今日：{sendLimit.sentToday}/{sendLimit.maxPerDay === Infinity ? '不限' : sendLimit.maxPerDay}
+          </span>
+        )}
+      </div>
 
       {!bulkMode ? (
         <form onSubmit={sendSingle}>
