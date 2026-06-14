@@ -1,0 +1,82 @@
+'use client';
+import { useState, useEffect } from 'react';
+import { authHeaders, getSmtp } from '@/lib/utils';
+
+export default function Send() {
+  const [auth, setAuth] = useState(false);
+  useEffect(() => { if (!localStorage.getItem('user')) window.location.href = '/login'; else setAuth(true); }, []);
+  if (!auth) return <div style={{ padding: 40, textAlign: 'center', color: '#94a3b8' }}>请先登录...</div>;
+
+  const [form, setForm] = useState({ email: '', name: '', company: '', subject: '', body: '' });
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [bulkMode, setBulkMode] = useState(false);
+  const [bulkText, setBulkText] = useState('');
+
+  const update = (k, v) => setForm(prev => ({ ...prev, [k]: v }));
+  const inp = (k, ph, type) => <input type={type || 'text'} placeholder={ph} value={form[k]} onChange={e => update(k, e.target.value)} style={{ width:'100%', padding:10, borderRadius:8, border:'1px solid #d1d5db', background:'#fff', fontSize:14, marginBottom:10, outline:'none' }} />;
+
+  async function sendSingle(e) {
+    e.preventDefault();
+    if (!form.email || !form.email.includes('@')) { setResult({ error: '请输入有效邮箱' }); return; }
+    setLoading(true); setResult(null);
+    try {
+      const smtp = getSmtp();
+      const r = await fetch('/api/send', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ to: form.email, name: form.name, company: form.company, subject: form.subject || 'Business Inquiry', body: form.body, smtp }) });
+      setResult(await r.json());
+    } catch { setResult({ error: '发送失败' }); }
+    setLoading(false);
+  }
+
+  async function sendBulk() {
+    const lines = bulkText.trim().split('\n').filter(l => l.trim());
+    const targets = lines.map(line => {
+      const p = line.split(',').map(s => s.trim());
+      return { email: p[0] || '', name: p[1] || '', company: p[2] || '', subject: p[3] || 'Business Inquiry', body: p[4] || '' };
+    });
+    if (!targets.length || !targets[0].email.includes('@')) { setResult({ error: '格式错误' }); return; }
+    setLoading(true); setResult(null);
+    try {
+      const smtp = getSmtp();
+      const r = await fetch('/api/send', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ targets, smtp }) });
+      setResult(await r.json());
+    } catch { setResult({ error: '发送失败' }); }
+    setLoading(false);
+  }
+
+  return (
+    <div style={{ maxWidth: 700, margin: '40px auto', padding: '0 20px' }}>
+      <h1 style={{ fontSize: 28, fontWeight: 700, color: '#0f172a', marginBottom: 8 }}>发信</h1>
+      <p style={{ color: '#94a3b8', marginBottom: 24 }}>
+        <button onClick={() => { setBulkMode(false); setResult(null); }} style={{ background: bulkMode ? '#f1f5f9' : '#2563eb', color: bulkMode ? '#64748b' : '#fff', border: 'none', padding: '6px 14px', borderRadius: 6, cursor: 'pointer', fontSize: 13, marginRight: 8 }}>单封</button>
+        <button onClick={() => { setBulkMode(true); setResult(null); }} style={{ background: bulkMode ? '#2563eb' : '#f1f5f9', color: bulkMode ? '#fff' : '#64748b', border: 'none', padding: '6px 14px', borderRadius: 6, cursor: 'pointer', fontSize: 13 }}>批量</button>
+        <span style={{ marginLeft: 12, fontSize: 12, color: '#94a3b8' }}>批量模式会连续发送，不设间隔</span>
+      </p>
+
+      {!bulkMode ? (
+        <form onSubmit={sendSingle}>
+          {inp('email', '收件人邮箱 *')}
+          {inp('name', '收件人姓名')}
+          {inp('company', '公司名称')}
+          {inp('subject', '邮件主题')}
+          <textarea value={form.body} onChange={e => update('body', e.target.value)} placeholder="邮件正文" rows={6} style={{ width:'100%', padding:10, borderRadius:8, border:'1px solid #d1d5db', background:'#fff', fontSize:14, marginBottom:10, outline:'none' }} />
+          <button type="submit" disabled={loading} style={{ background:'#2563eb',color:'#fff',border:'none',padding:'12px 28px',borderRadius:8,cursor:'pointer',fontSize:15,fontWeight:600 }}>{loading ? '发送中...' : '发送'}</button>
+        </form>
+      ) : (
+        <div>
+          <textarea value={bulkText} onChange={e => setBulkText(e.target.value)} placeholder={`每行一个客户，逗号分隔：\nbuyer@example.com, John, ABC Corp, 采购咨询, 正文内容`} rows={12} style={{ width:'100%', padding:10, borderRadius:8, border:'1px solid #d1d5db', background:'#fff', fontSize:13, fontFamily:'monospace', marginBottom:10, outline:'none' }} />
+          <button onClick={sendBulk} disabled={loading} style={{ background:'#2563eb',color:'#fff',border:'none',padding:'12px 28px',borderRadius:8,cursor:'pointer',fontSize:15,fontWeight:600 }}>{loading ? '发送中...' : '批量发送'}</button>
+        </div>
+      )}
+
+      {result && (
+        <div style={{ marginTop: 20, padding: 16, borderRadius: 8, background: result.error ? '#fef2f2' : '#f0fdf4', border: '1px solid ' + (result.error ? '#fecaca' : '#bbf7d0') }}>
+          {result.error ? <div style={{ color: '#dc2626' }}>❌ {result.error}</div>
+            : <div style={{ color: '#15803d' }}>✅ 发送 {result.sent || result.results?.length} 封，失败 {result.failed || 0} 封
+              {result.results && <ul style={{ marginTop: 8, fontSize: 13 }}>{result.results.map((r,i) => <li key={i}>{r.email}: {r.status === 'ok' ? '已发送' : r.error}</li>)}</ul>}
+            </div>}
+        </div>
+      )}
+    </div>
+  );
+}
