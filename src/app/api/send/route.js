@@ -4,6 +4,7 @@ import { requireAuth } from '@/lib/auth';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { getSmtpConfig } from '@/lib/smtp-store';
 import { getSendLimit, recordSend } from '@/lib/quota';
+import { createTrack, createTracksBatch } from '@/lib/track';
 
 function safeName(s) {
   return (s || '').replace(/[\r\n\t\\"]/g, '').replace(/[^\w一-鿿\s·@.(),&+\-]/g, '').slice(0, 100);
@@ -19,6 +20,12 @@ function makeTransporter(smtp) {
   });
 }
 
+function getBaseUrl(req) {
+  const host = req.headers.get('host') || 'b2b.toolbase.fun';
+  const proto = host.startsWith('localhost') ? 'http' : 'https';
+  return `${proto}://${host}`;
+}
+
 export async function POST(req) {
   const { user, error } = await requireAuth(req);
   if (error) return error;
@@ -30,6 +37,7 @@ export async function POST(req) {
   if (sendLimit && !sendLimit.allowed) return NextResponse.json({ error: `今日发信已达上限（${sendLimit.maxPerDay}封/天），请升级套餐或明天再试` }, { status: 429 });
 
   const body = await req.json();
+  const baseUrl = getBaseUrl(req);
 
   // 从服务端读取用户 SMTP 配置
   const smtp = await getSmtpConfig(user.id);
@@ -45,8 +53,11 @@ export async function POST(req) {
 
   // 批量发送
   if (body.targets && Array.isArray(body.targets)) {
+    const trackIds = await createTracksBatch(user.id, body.targets);
     const results = [];
-    for (const t of body.targets) {
+    for (let i = 0; i < body.targets.length; i++) {
+      const t = body.targets[i];
+      const trackId = trackIds[i];
       const recipient = t.email || t.to;
       if (!recipient) { results.push({ email: '', status: 'fail', error: 'Missing recipient' }); continue; }
       try {
@@ -57,7 +68,7 @@ export async function POST(req) {
         }) : null);
         if (!transporter) { results.push({ email: recipient, status: 'fail', error: 'No SMTP configured' }); continue; }
         const from = defaultFrom || process.env.SMTP_USER;
-        const html = buildHtml(t.body || body.body, from);
+        const html = buildHtml(t.body || body.body, from, trackId, baseUrl);
         const info = await transporter.sendMail({ from, to: recipient, subject: t.subject || body.subject || 'Business Inquiry', html });
         results.push({ email: recipient, status: 'ok', messageId: info.messageId });
       } catch (e) {
@@ -91,7 +102,8 @@ export async function POST(req) {
     return NextResponse.json({ ok: false, error: 'No SMTP configured' }, { status: 500 });
   }
 
-  const html = buildHtml(body.body, from);
+  const trackId = await createTrack(user.id, recipient, body.domain || '', subject || '');
+  const html = buildHtml(body.body, from, trackId, baseUrl);
 
   let lastError;
   for (let attempt = 0; attempt < 3; attempt++) {
@@ -111,7 +123,8 @@ function esc(s) {
   return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-function buildHtml(bodyText, from) {
+function buildHtml(bodyText, from, trackId, baseUrl) {
   const body = esc(bodyText || 'We would love to explore a supply partnership.').replace(/\n/g, '<br>');
-  return `<p>Dear Sir/Madam,</p><p>${body}</p><br><p>Best regards,<br>${esc(from)}</p><hr style="border:none;border-top:1px solid #eee;margin:20px 0"><p style="font-size:11px;color:#999">This is a one-time business inquiry. If you prefer not to receive further communications, simply reply with "unsubscribe" and we will remove you immediately.</p>`;
+  const pixel = trackId ? `<img src="${baseUrl}/api/track/open/${trackId}" width="1" height="1" alt="" style="display:none" />` : '';
+  return `<p>Dear Sir/Madam,</p><p>${body}</p><br><p>Best regards,<br>${esc(from)}</p><hr style="border:none;border-top:1px solid #eee;margin:20px 0"><p style="font-size:11px;color:#999">This is a one-time business inquiry. If you prefer not to receive further communications, simply reply with "unsubscribe" and we will remove you immediately.</p>${pixel}`;
 }

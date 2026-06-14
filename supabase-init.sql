@@ -25,3 +25,20 @@ CREATE TABLE IF NOT EXISTS api_quota (
   used INTEGER DEFAULT 0,
   PRIMARY KEY (provider, month_key)
 );
+
+-- 4. 邮件追踪表
+CREATE TABLE IF NOT EXISTS email_tracks (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  recipient TEXT NOT NULL,
+  domain TEXT DEFAULT '',
+  subject TEXT DEFAULT '',
+  sent_at TIMESTAMPTZ DEFAULT now(),
+  opened_at TIMESTAMPTZ,
+  opened INTEGER DEFAULT 0
+);
+
+ALTER TABLE email_tracks ENABLE ROW LEVEL SECURITY;
+-- 管理员通过 service_role 读写，用户只能读自己的
+CREATE POLICY "用户只能查看自己的追踪数据" ON email_tracks
+  FOR SELECT USING (auth.uid() = user_id);

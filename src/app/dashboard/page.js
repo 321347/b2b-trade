@@ -17,6 +17,7 @@ export default function Dashboard() {
   }, []);
 
   const [smtp, setSmtp] = useState(null);
+  const [tracks, setTracks] = useState(null);
 
   const recentSearches = typeof window !== 'undefined'
     ? JSON.parse(localStorage.getItem('searchHistory') || '[]')
@@ -26,6 +27,8 @@ export default function Dashboard() {
     if (user) {
       fetch('/api/smtp-config', { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
         .then(r => r.json()).then(d => setSmtp(d.config)).catch(() => {});
+      fetch('/api/track/stats', { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
+        .then(r => r.json()).then(d => setTracks(d)).catch(() => {});
     }
   }, [user]);
 
@@ -64,6 +67,48 @@ export default function Dashboard() {
           </p>
         )}
       </div>
+
+      {/* 邮件追踪 */}
+      {tracks && (
+        <div style={{ background: '#fff', borderRadius: 10, padding: 24, border: '1px solid #e5e7eb', marginBottom: 20 }}>
+          <div style={{ fontSize: 14, color: '#64748b', marginBottom: 12 }}>邮件追踪</div>
+          <div style={{ display: 'flex', gap: 24, marginBottom: tracks.tracks?.length > 0 ? 16 : 0 }}>
+            <div>
+              <div style={{ fontSize: 28, fontWeight: 700, color: '#2563eb' }}>{tracks.sent}</div>
+              <div style={{ fontSize: 13, color: '#94a3b8' }}>已发送</div>
+            </div>
+            <div>
+              <div style={{ fontSize: 28, fontWeight: 700, color: '#16a34a' }}>{tracks.opened}</div>
+              <div style={{ fontSize: 13, color: '#94a3b8' }}>已打开</div>
+            </div>
+            <div>
+              <div style={{ fontSize: 28, fontWeight: 700, color: '#f59e0b' }}>{tracks.sent > 0 ? Math.round((tracks.opened / tracks.sent) * 100) : 0}%</div>
+              <div style={{ fontSize: 13, color: '#94a3b8' }}>打开率</div>
+            </div>
+          </div>
+          {tracks.tracks?.length > 0 && (
+            <div style={{ maxHeight: 180, overflowY: 'auto' }}>
+              {tracks.tracks.slice(0, 15).map(t => (
+                <div key={t.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #f5f5f5', fontSize: 13 }}>
+                  <div>
+                    <span style={{ color: '#334155' }}>{t.recipient}</span>
+                    {t.domain ? <span style={{ color: '#94a3b8', marginLeft: 8 }}>{t.domain}</span> : null}
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: '#94a3b8' }}>
+                    <span>{new Date(t.sent_at).toLocaleDateString('zh-CN')}</span>
+                    {t.opened ? (
+                      <span style={{ color: '#16a34a', fontWeight: 500 }}>已打开 {new Date(t.opened_at).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}</span>
+                    ) : (
+                      <span style={{ color: '#d1d5db' }}>未打开</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          {tracks.sent === 0 && <div style={{ fontSize: 13, color: '#94a3b8' }}>暂无邮件发送记录</div>}
+        </div>
+      )}
 
       {/* 邮箱配置状态 */}
       <div style={{ background: '#fff', borderRadius: 10, padding: 24, border: '1px solid #e5e7eb', marginBottom: 20 }}>
