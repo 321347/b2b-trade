@@ -38,6 +38,11 @@ export default function Admin() {
     );
   }, [users, search]);
 
+  const stats = useMemo(() => {
+    const paying = users.filter(u => u.plan !== 'free').length;
+    return { total: users.length, paying, free: users.length - paying };
+  }, [users]);
+
   const totalPages = Math.ceil(filtered.length / pageSize);
   const paged = filtered.slice(page * pageSize, (page + 1) * pageSize);
 
@@ -137,6 +142,25 @@ export default function Admin() {
 
       {loading ? <p>加载中...</p> : (
         <>
+          <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
+            <div style={{ flex: 1, background: '#fff', borderRadius: 10, padding: 16, border: '1px solid #e5e7eb', textAlign: 'center' }}>
+              <div style={{ fontSize: 28, fontWeight: 700, color: '#0f172a' }}>{stats.total}</div>
+              <div style={{ fontSize: 13, color: '#94a3b8' }}>总用户</div>
+            </div>
+            <div style={{ flex: 1, background: '#fff', borderRadius: 10, padding: 16, border: '1px solid #e5e7eb', textAlign: 'center' }}>
+              <div style={{ fontSize: 28, fontWeight: 700, color: '#2563eb' }}>{stats.paying}</div>
+              <div style={{ fontSize: 13, color: '#94a3b8' }}>付费用户</div>
+            </div>
+            <div style={{ flex: 1, background: '#fff', borderRadius: 10, padding: 16, border: '1px solid #e5e7eb', textAlign: 'center' }}>
+              <div style={{ fontSize: 28, fontWeight: 700, color: '#f59e0b' }}>{stats.free}</div>
+              <div style={{ fontSize: 13, color: '#94a3b8' }}>免费用户</div>
+            </div>
+            <div style={{ flex: 1, background: '#fff', borderRadius: 10, padding: 16, border: '1px solid #e5e7eb', textAlign: 'center' }}>
+              <div style={{ fontSize: 28, fontWeight: 700, color: '#16a34a' }}>{stats.total > 0 ? Math.round((stats.paying / stats.total) * 100) : 0}%</div>
+              <div style={{ fontSize: 13, color: '#94a3b8' }}>付费率</div>
+            </div>
+          </div>
+
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14, background: '#fff', borderRadius: 12, border: '1px solid #e5e7eb' }}>
             <thead>
               <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e5e7eb' }}>

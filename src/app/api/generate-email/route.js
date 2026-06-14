@@ -15,6 +15,28 @@ const CASES = [
   { industry: 'beauty', market: '德国', text: '德国美妆连锁——15,000套化妆刷，GMPC认证，季度返单' },
 ];
 
+const INDUSTRY_MAP = {
+  kitchen: ['厨房','厨具','小家电','压蒜器','切菜器','削皮器','锅具','烘焙','刀具','锅铲','烤盘','打蛋器','量杯','开瓶器','不锈钢','kitchen','cookware','bakeware'],
+  pet: ['宠物','狗','猫','牵引绳','项圈','窝','垫子','宠物碗','宠物玩具','猫抓板','狗咬胶','pet','dog','cat'],
+  gift: ['礼品','纪念品','圣诞','定制','促销品','摆件','钥匙扣','冰箱贴','相框','香薰','蜡烛','gift','souvenir'],
+  home: ['家居','靠垫','花瓶','桌布','收纳','储物','熨衣板','灯具','纺织品','home','decor','furniture'],
+  electronics: ['电子','数码','手机壳','数据线','充电器','充电宝','蓝牙','耳机','支架','electronic','usb','cable'],
+  beauty: ['美妆','化妆','化妆刷','粉扑','美妆蛋','睫毛夹','指甲锉','洗漱','beauty','cosmetic','makeup'],
+  toys: ['玩具','毛绒','拼图','桌游','积木','益智','儿童','toy','plush','puzzle'],
+  sports: ['运动','瑜伽','哑铃','跑步','健身','骑行','sport','fitness','yoga'],
+  outdoor: ['户外','露营','帐篷','睡袋','登山','背包','outdoor','camping'],
+  stationery: ['文具','办公','笔记本','笔','文件夹','stationery','office'],
+  auto: ['摩托','头盔','手套','护具','改装','auto','motorcycle'],
+};
+
+function mapIndustry(q) {
+  const lower = (q || '').toLowerCase();
+  for (const [key, terms] of Object.entries(INDUSTRY_MAP)) {
+    if (terms.some(t => lower.includes(t) || t.includes(lower))) return key;
+  }
+  return 'default';
+}
+
 // === 各行业开发信模板 ===
 const TEMPLATES = {
   kitchen: {
@@ -32,6 +54,46 @@ const TEMPLATES = {
     value: 'custom designs from $0.07/pc, MOQ 100pcs, 3-7 day sample turnaround, full OEM packaging',
     callToAction: 'Could we create 3 free custom magnet samples based on your preferred themes?',
   },
+  home: {
+    painPoint: 'Home decor buyers are always looking for unique designs at competitive FOB prices',
+    value: 'OEKO-TEX certified fabrics, 5000+ SKU designs refreshed quarterly, 30-day lead time',
+    callToAction: 'Would a digital catalog of our latest collection be helpful for your next buying trip?',
+  },
+  electronics: {
+    painPoint: 'Electronics accessories importers deal with CE/FCC certification delays and quality issues',
+    value: 'pre-certified USB/Lightning cables, MFi/CE/FCC/ROHS, 0.3% defect rate on last 500K units',
+    callToAction: 'Could I send our compliance test reports and 5 free samples for your lab to verify?',
+  },
+  beauty: {
+    painPoint: 'Beauty tool distributors switch suppliers frequently due to inconsistent finishing and late shipments',
+    value: 'GMPC-certified facility, 15-day sample turnaround, private label with custom packaging from 500pcs',
+    callToAction: 'Shall we prepare 5 branded samples with your logo for a quality check?',
+  },
+  toys: {
+    painPoint: 'Toy importers face increasing regulatory pressure — EN71/ASTM testing costs eat into margins',
+    value: 'EN71/ASTM/CPSIA pre-certified, 60-day design-to-shelf, 0 recalls in 5 years across 2M+ units',
+    callToAction: 'Would you like our compliance certification package and 3 sample designs to review?',
+  },
+  sports: {
+    painPoint: 'Fitness brands need durable products that survive heavy use and retain customer loyalty',
+    value: '500D+ reinforced stitching, 1000-hour abrasion tested, OEM with custom color/logo from 200pcs',
+    callToAction: 'Could we send a durability test report and 3 samples with your branding?',
+  },
+  outdoor: {
+    painPoint: 'Outdoor gear importers face long lead times and unpredictable quality from new suppliers',
+    value: 'IPX6 waterproof, UV50+ tested, 45-day lead time, 2-year warranty on all OEM orders',
+    callToAction: 'Would you be open to reviewing our test certificates and 3 sample units?',
+  },
+  stationery: {
+    painPoint: 'Stationery importers compete on thin margins — every cent in sourcing matters',
+    value: 'FSC-certified paper, soy-based ink, MOQ 500pcs, factory-direct pricing 30% below trade shows',
+    callToAction: 'Could I send our price list and 5 blank sample notebooks for your evaluation?',
+  },
+  auto: {
+    painPoint: 'Auto parts distributors need ISO-certified suppliers with consistent metallurgy and tolerances',
+    value: 'ISO/TS 16949 certified, CNC-machined to ±0.01mm, 20-day lead time, PPAP Level 3 available',
+    callToAction: 'Would you like our material certs and 3 sample parts for your QC team to inspect?',
+  },
   default: {
     painPoint: 'sourcing costs can be reduced by working directly with factories',
     value: 'factory-direct pricing, full OEM, competitive MOQ, verified quality control',
@@ -46,7 +108,8 @@ export async function POST(req) {
   const { company, industry = 'default', market = '英国', contactName = '', domain = '' } = await req.json();
   if (!company) return NextResponse.json({ error: 'Company name required' }, { status: 400 });
 
-  const tpl = TEMPLATES[industry] || TEMPLATES.default;
+  const industryKey = mapIndustry(industry);
+  const tpl = TEMPLATES[industryKey] || TEMPLATES.default;
 
   // Step 1: 客户背调（模拟）
   const research = `Company: ${company}${domain ? ' (' + domain + ')' : ''}\nIndustry: ${industry}\nTarget Market: ${market}\nLikely Product Lines: Imported consumer goods for ${market} retailers`;

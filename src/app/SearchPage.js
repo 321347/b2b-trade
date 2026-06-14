@@ -80,20 +80,15 @@ export default function SearchPage({ variant = 'home' }) {
   async function handleSend() {
     if (!user) { setShowLoginTip(true); return; }
     if (!smtpConfigured) { window.location.href = '/email-settings'; return; }
-    const tasks = [];
-    companies.forEach((c, i) => { c.emails.forEach(email => { tasks.push({ to: email, company: c.company, subject: emails[i]?.customSubject, body: emails[i]?.customBody }); }); });
-    if (tasks.length === 0) return;
+    const targets = [];
+    companies.forEach((c, i) => { c.emails.forEach(email => { targets.push({ email, company: c.company, subject: emails[i]?.customSubject, body: emails[i]?.customBody }); }); });
+    if (targets.length === 0) return;
     setSending(true); setSent([]);
-    const results = [];
-    for (const t of tasks) {
-      try {
-        const r = await fetch('/api/send', { method: 'POST', headers: authHeaders(), body: JSON.stringify(t) });
-        const d = await r.json();
-        results.push({ email: t.to, status: d.ok ? 'ok' : 'fail' });
-      } catch { results.push({ email: t.to, status: 'fail' }); }
-      setSent([...results]);
-      await new Promise(r => setTimeout(r, 2000));
-    }
+    try {
+      const r = await fetch('/api/send', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ targets }) });
+      const d = await r.json();
+      if (d.results) setSent(d.results.map(r => ({ email: r.email, status: r.status })));
+    } catch { setSent(targets.map(t => ({ email: t.email, status: 'fail' }))); }
     setSending(false);
   }
 
@@ -212,12 +207,10 @@ export default function SearchPage({ variant = 'home' }) {
         </div>
       )}
 
-      {isSending && (
+      {sending && (
         <div style={{ textAlign: 'center', padding: '24px 20px', marginBottom: 16 }}>
-          <div style={{ fontSize: 15, fontWeight: 600, color: '#0f172a', marginBottom: 12 }}>正在发送... {sent.filter(s => s.status === 'ok').length}/{sent.length}</div>
-          <div style={{ width: '100%', height: 4, background: '#f3f3f3', borderRadius: 2, overflow: 'hidden' }}>
-            <div style={{ height: '100%', background: '#0f172a', borderRadius: 2, transition: 'width 0.3s', width: `${(sent.length / (companies.reduce((a, c) => a + c.emails.length, 0))) * 100}%` }} />
-          </div>
+          <div style={{ fontSize: 15, fontWeight: 600, color: '#0f172a' }}>正在发送...</div>
+          <div style={{ fontSize: 13, color: '#94a3b8', marginTop: 4 }}>共 {companies.reduce((a, c) => a + c.emails.length, 0)} 封邮件，请稍候</div>
         </div>
       )}
 

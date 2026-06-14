@@ -132,7 +132,7 @@ export default function EmailSettings() {
       const r = await fetch('/api/send-test', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('token') },
-        body: JSON.stringify({ smtp: form, to: user?.email }),
+        body: '{}',
       });
       const d = await r.json();
       setTestResult(d.ok ? 'success' : 'fail');

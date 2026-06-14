@@ -2,17 +2,18 @@ import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { requireAuth } from '@/lib/auth';
 import { checkRateLimit } from '@/lib/rate-limit';
+import { getSmtpConfig } from '@/lib/smtp-store';
 
 export async function POST(req) {
   const { user, error } = await requireAuth(req);
   if (error) return error;
 
-  const ip = req.headers.get('x-forwarded-for') || 'unknown';
-  const rl = checkRateLimit('send', ip);
+  const rl = checkRateLimit('send', user.id);
   if (!rl.allowed) return NextResponse.json({ error: '发送太频繁，请稍后再试' }, { status: 429 });
-  const { smtp, to } = await req.json();
+
+  const smtp = await getSmtpConfig(user.id);
   if (!smtp?.host || !smtp?.user || !smtp?.pass) {
-    return NextResponse.json({ ok: false, error: 'SMTP 配置不完整' }, { status: 400 });
+    return NextResponse.json({ ok: false, error: '请先保存 SMTP 配置' }, { status: 400 });
   }
 
   try {
@@ -25,7 +26,7 @@ export async function POST(req) {
 
     await transporter.sendMail({
       from: smtp.fromName ? `"${(smtp.fromName || '').replace(/[\r\n\t\\"]/g, '').slice(0, 100)}" <${smtp.user}>` : smtp.user,
-      to: to || smtp.user,
+      to: user.email,
       subject: '鱼获科技 · 邮箱配置测试',
       html: '<p>这是一封测试邮件。如果你收到这封邮件，说明邮箱配置成功。</p><p style="color:#94a3b8">— 鱼获科技</p>',
     });

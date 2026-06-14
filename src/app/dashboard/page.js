@@ -34,7 +34,7 @@ export default function Dashboard() {
 
   if (!user || !data) return <div style={{ padding: 40, textAlign: 'center', color: '#94a3b8' }}>加载中...</div>;
 
-  const { quota } = data;
+  const { quota, sendLimit } = data;
   const pct = quota.total > 0 ? Math.round((quota.remaining / quota.total) * 100) : 0;
 
   return (
@@ -67,6 +67,25 @@ export default function Dashboard() {
           </p>
         )}
       </div>
+
+      {/* 发信限额 */}
+      {sendLimit && (
+        <div style={{ background: '#fff', borderRadius: 10, padding: 24, border: '1px solid #e5e7eb', marginBottom: 20 }}>
+          <div style={{ fontSize: 14, color: '#64748b', marginBottom: 12 }}>今日发信</div>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 12 }}>
+            <span style={{ fontSize: 36, fontWeight: 700, color: sendLimit.allowed ? '#2563eb' : '#dc2626' }}>{sendLimit.sentToday}</span>
+            <span style={{ fontSize: 14, color: '#94a3b8' }}>/ {sendLimit.maxPerDay === Infinity ? '不限' : sendLimit.maxPerDay + ' 封'}</span>
+          </div>
+          <div style={{ height: 8, background: '#f1f5f9', borderRadius: 4 }}>
+            <div style={{ height: '100%', borderRadius: 4, background: sendLimit.allowed ? '#2563eb' : '#dc2626', width: sendLimit.maxPerDay === Infinity ? '50%' : Math.min(100, Math.round((sendLimit.sentToday / sendLimit.maxPerDay) * 100)) + '%', transition: 'width .4s' }} />
+          </div>
+          {!sendLimit.allowed && (
+            <p style={{ marginTop: 12, fontSize: 13, color: '#dc2626' }}>
+              今日发信已达上限，<a href="/pricing" style={{ color: '#2563eb', fontWeight: 500 }}>升级套餐</a>获取更多
+            </p>
+          )}
+        </div>
+      )}
 
       {/* 邮件追踪 */}
       {tracks && (
