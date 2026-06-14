@@ -16,12 +16,18 @@ export default function Dashboard() {
       .catch(() => { window.location.href = '/login'; });
   }, []);
 
-  const smtpCfg = typeof window !== 'undefined' && localStorage.getItem('smtpConfig');
-  const smtp = smtpCfg ? JSON.parse(smtpCfg) : null;
+  const [smtp, setSmtp] = useState(null);
 
   const recentSearches = typeof window !== 'undefined'
     ? JSON.parse(localStorage.getItem('searchHistory') || '[]')
     : [];
+
+  useEffect(() => {
+    if (user) {
+      fetch('/api/smtp-config', { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
+        .then(r => r.json()).then(d => setSmtp(d.config)).catch(() => {});
+    }
+  }, [user]);
 
   if (!user || !data) return <div style={{ padding: 40, textAlign: 'center', color: '#94a3b8' }}>加载中...</div>;
 

@@ -114,12 +114,16 @@ export default function EmailSettings() {
   }
 
   async function handleSave() {
-    await fetch('/api/smtp-config', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('token') },
-      body: JSON.stringify(form),
-    });
-    setSaved(true);
+    try {
+      const r = await fetch('/api/smtp-config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+        body: JSON.stringify(form),
+      });
+      const d = await r.json();
+      if (d.ok) setSaved(true);
+      else setTestResult('fail');
+    } catch { setTestResult('fail'); }
   }
 
   async function handleTest() {

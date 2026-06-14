@@ -5,7 +5,7 @@ export default function Nav() {
   const [user, setUser] = useState(null);
   useEffect(() => {
     const u = localStorage.getItem('user');
-    if (u) setUser(JSON.parse(u));
+    try { if (u) setUser(JSON.parse(u)); } catch { localStorage.removeItem('user'); }
   }, []);
 
   const links = [

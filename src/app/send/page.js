@@ -12,6 +12,7 @@ export default function Send() {
   const [loading, setLoading] = useState(false);
   const [bulkMode, setBulkMode] = useState(false);
   const [bulkText, setBulkText] = useState('');
+  const [bulkProgress, setBulkProgress] = useState(null);
 
   const update = (k, v) => setForm(prev => ({ ...prev, [k]: v }));
   const inp = (k, ph, type) => <input type={type || 'text'} placeholder={ph} value={form[k]} onChange={e => update(k, e.target.value)} style={{ width:'100%', padding:10, borderRadius:8, border:'1px solid #d1d5db', background:'#fff', fontSize:14, marginBottom:10, outline:'none' }} />;
@@ -34,12 +35,19 @@ export default function Send() {
       return { email: p[0] || '', name: p[1] || '', company: p[2] || '', subject: p[3] || 'Business Inquiry', body: p[4] || '' };
     });
     if (!targets.length || !targets[0].email.includes('@')) { setResult({ error: '格式错误' }); return; }
-    setLoading(true); setResult(null);
-    try {
-      const r = await fetch('/api/send', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ targets }) });
-      setResult(await r.json());
-    } catch { setResult({ error: '发送失败' }); }
-    setLoading(false);
+    setLoading(true); setResult(null); setBulkProgress({ sent: 0, total: targets.length });
+    const ok = []; const fail = [];
+    for (const t of targets) {
+      try {
+        const r = await fetch('/api/send', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ to: t.email, name: t.name, company: t.company, subject: t.subject, body: t.body }) });
+        const d = await r.json();
+        if (d.ok) ok.push(t.email); else fail.push({ email: t.email, error: d.error });
+      } catch { fail.push({ email: t.email, error: '网络错误' }); }
+      setBulkProgress({ sent: ok.length + fail.length, total: targets.length });
+      await new Promise(r => setTimeout(r, 1500));
+    }
+    setResult({ sent: ok.length, failed: fail.length, details: fail });
+    setLoading(false); setBulkProgress(null);
   }
 
   return (
@@ -63,6 +71,14 @@ export default function Send() {
       ) : (
         <div>
           <textarea value={bulkText} onChange={e => setBulkText(e.target.value)} placeholder={`每行一个客户，逗号分隔：\nbuyer@example.com, John, ABC Corp, 采购咨询, 正文内容`} rows={12} style={{ width:'100%', padding:10, borderRadius:8, border:'1px solid #d1d5db', background:'#fff', fontSize:13, fontFamily:'monospace', marginBottom:10, outline:'none' }} />
+          {bulkProgress && (
+            <div style={{ marginBottom: 10, fontSize: 13, color: '#64748b' }}>
+              发送中：{bulkProgress.sent}/{bulkProgress.total}
+              <div style={{ height: 4, background: '#f1f5f9', borderRadius: 2, marginTop: 4 }}>
+                <div style={{ height: '100%', background: '#2563eb', borderRadius: 2, width: `${(bulkProgress.sent / bulkProgress.total) * 100}%`, transition: 'width .3s' }} />
+              </div>
+            </div>
+          )}
           <button onClick={sendBulk} disabled={loading} style={{ background:'#2563eb',color:'#fff',border:'none',padding:'12px 28px',borderRadius:8,cursor:'pointer',fontSize:15,fontWeight:600 }}>{loading ? '发送中...' : '批量发送'}</button>
         </div>
       )}
