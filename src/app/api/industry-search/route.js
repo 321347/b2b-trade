@@ -167,13 +167,13 @@ export async function GET(req) {
 
   // Rate limit by IP
   const ip = req.headers.get('x-forwarded-for') || 'unknown';
-  const rl = checkRateLimit('search', ip);
+  const rl = await checkRateLimit('search', ip);
   if (!rl.allowed) return NextResponse.json({ error: '搜索太频繁，请稍后再试' }, { status: 429 });
 
   // 未登录用户：IP 每日搜索上限 10 次
   const authHeader = req.headers.get('authorization');
   if (!authHeader) {
-    const ipDaily = checkRateLimit('anonSearch', ip);
+    const ipDaily = await checkRateLimit('anonSearch', ip);
     if (!ipDaily.allowed) return NextResponse.json({ error: '免费搜索次数已用完，请注册获取 10 次搜索', needLogin: true }, { status: 429 });
   }
 

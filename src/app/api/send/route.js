@@ -30,7 +30,7 @@ export async function POST(req) {
   const { user, error } = await requireAuth(req);
   if (error) return error;
 
-  const rl = checkRateLimit('send', user.id);
+  const rl = await checkRateLimit('send', user.id);
   if (!rl.allowed) return NextResponse.json({ error: '发送太频繁，请稍后再试' }, { status: 429 });
 
   const sendLimit = await getSendLimit(req);

@@ -6,7 +6,7 @@ const supabase = getSupabase();
 
 export async function POST(req) {
   const ip = req.headers.get('x-forwarded-for') || 'unknown';
-  const rl = checkRateLimit('login', ip);
+  const rl = await checkRateLimit('login', ip);
   if (!rl.allowed) return NextResponse.json({ error: '登录太频繁，请稍后再试' }, { status: 429 });
 
   const { email, password } = await req.json();
