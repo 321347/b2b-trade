@@ -3,6 +3,7 @@ import { requireAuth } from '@/lib/auth';
 import { searchAllProviders } from '@/lib/providers';
 import { checkDomainMX } from '@/lib/guesser';
 import { getCachedAsync, setCached, getQuotaState, incrementQuota, getQuotaSummary, loadQuotaFromDB } from '@/lib/cache';
+import { getUserQuota, decrementQuota } from '@/lib/quota';
 
 export const dynamic = 'force-dynamic';
 
@@ -30,7 +31,11 @@ export async function POST(req) {
     });
   }
 
-  // === 2. MX 域名验证 ===
+  // === 2. 用户套餐配额检查 ===
+  const userQuota = await getUserQuota(req);
+  if (userQuota.remaining === 0) return NextResponse.json({ error: '本月搜索次数已用完，请升级套餐', quota: userQuota }, { status: 429 });
+
+  // === 3. MX 域名验证 ===
   const mxCheck = await checkDomainMX(cleanDomain);
   if (!mxCheck.valid) {
     return NextResponse.json({
@@ -53,10 +58,13 @@ export async function POST(req) {
     }
   }
 
+  // 消耗用户套餐配额
+  await decrementQuota(req);
+
   // 按置信度排序
   const allEmails = (apiResult.emails || []).sort((a, b) => (b.confidence || 0) - (a.confidence || 0));
 
-  // === 6. 组装结果 ===
+  // === 5. 组装结果 ===
   const result = {
     domain: cleanDomain,
     mx: mxCheck.mx,
@@ -76,7 +84,7 @@ export async function POST(req) {
     elapsed: Date.now() - startTime,
   };
 
-  // === 7. 写缓存 ===
+  // === 6. 写缓存 ===
   if (allEmails.length > 0) {
     setCached(cleanDomain, {
       domain: cleanDomain,
