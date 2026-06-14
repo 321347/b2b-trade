@@ -56,7 +56,7 @@ export default function Send() {
       <p style={{ color: '#94a3b8', marginBottom: 24 }}>
         <button onClick={() => { setBulkMode(false); setResult(null); }} style={{ background: bulkMode ? '#f1f5f9' : '#2563eb', color: bulkMode ? '#64748b' : '#fff', border: 'none', padding: '6px 14px', borderRadius: 6, cursor: 'pointer', fontSize: 13, marginRight: 8 }}>单封</button>
         <button onClick={() => { setBulkMode(true); setResult(null); }} style={{ background: bulkMode ? '#2563eb' : '#f1f5f9', color: bulkMode ? '#fff' : '#64748b', border: 'none', padding: '6px 14px', borderRadius: 6, cursor: 'pointer', fontSize: 13 }}>批量</button>
-        <span style={{ marginLeft: 12, fontSize: 12, color: '#94a3b8' }}>批量模式会连续发送，不设间隔</span>
+        <span style={{ marginLeft: 12, fontSize: 12, color: '#94a3b8' }}>每封间隔 1.5 秒，避免触发邮箱限频</span>
       </p>
 
       {!bulkMode ? (

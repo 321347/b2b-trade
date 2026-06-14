@@ -51,12 +51,13 @@ export async function POST(req) {
     defaultFrom = process.env.SMTP_FROM || process.env.SMTP_USER;
   }
 
-  // 批量发送
+  // 批量发送（每次最多 3 封，防止 Vercel 超时）
   if (body.targets && Array.isArray(body.targets)) {
-    const trackIds = await createTracksBatch(user.id, body.targets);
+    const batch = body.targets.slice(0, 3);
+    const trackIds = await createTracksBatch(user.id, batch);
     const results = [];
-    for (let i = 0; i < body.targets.length; i++) {
-      const t = body.targets[i];
+    for (let i = 0; i < batch.length; i++) {
+      const t = batch[i];
       const trackId = trackIds[i];
       const recipient = t.email || t.to;
       if (!recipient) { results.push({ email: '', status: 'fail', error: 'Missing recipient' }); continue; }
@@ -74,7 +75,9 @@ export async function POST(req) {
       } catch (e) {
         results.push({ email: recipient, status: 'fail', error: e.message });
       }
-      await new Promise(r => setTimeout(r, 500));
+      // 间隔 3-7 秒随机抖动，避免被判群发（QQ/163 建议更久，但在 Vercel 10s 超时限制下取折衷）
+      const delay = 3000 + Math.floor(Math.random() * 4000);
+      await new Promise(r => setTimeout(r, delay));
     }
     const ok = results.filter(r => r.status === 'ok').length;
     if (ok > 0) await recordSend(req, ok);

@@ -84,11 +84,15 @@ export default function SearchPage({ variant = 'home' }) {
     companies.forEach((c, i) => { c.emails.forEach(email => { targets.push({ email, company: c.company, subject: emails[i]?.customSubject, body: emails[i]?.customBody }); }); });
     if (targets.length === 0) return;
     setSending(true); setSent([]);
-    try {
-      const r = await fetch('/api/send', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ targets }) });
-      const d = await r.json();
-      if (d.results) setSent(d.results.map(r => ({ email: r.email, status: r.status })));
-    } catch { setSent(targets.map(t => ({ email: t.email, status: 'fail' }))); }
+    const CHUNK = 3; const allResults = [];
+    for (let i = 0; i < targets.length; i += CHUNK) {
+      const chunk = targets.slice(i, i + CHUNK);
+      try {
+        const r = await fetch('/api/send', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ targets: chunk }) });
+        const d = await r.json();
+        if (d.results) { allResults.push(...d.results); setSent([...allResults]); }
+      } catch { allResults.push(...chunk.map(t => ({ email: t.email, status: 'fail' }))); setSent([...allResults]); }
+    }
     setSending(false);
   }
 
