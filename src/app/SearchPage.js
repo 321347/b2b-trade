@@ -93,8 +93,8 @@ export default function SearchPage({ variant = 'home' }) {
         results.push({ email: t.email, status: d.ok ? 'ok' : 'fail' });
       } catch { results.push({ email: t.email, status: 'fail' }); }
       setSent([...results]);
-      // 每封间隔 5-10 秒，防止邮箱封禁
-      if (i < targets.length - 1) await new Promise(r => setTimeout(r, 5000 + Math.random() * 5000));
+      // 每封间隔 2-3 分钟
+      if (i < targets.length - 1) await new Promise(r => setTimeout(r, 120000 + Math.random() * 60000));
     }
     setSending(false);
   }
@@ -220,7 +220,7 @@ export default function SearchPage({ variant = 'home' }) {
           <div style={{ width: '100%', height: 4, background: '#f3f3f3', borderRadius: 2, overflow: 'hidden' }}>
             <div style={{ height: '100%', background: '#0f172a', borderRadius: 2, transition: 'width 0.3s', width: `${(sent.length / companies.reduce((a, c) => a + c.emails.length, 0)) * 100}%` }} />
           </div>
-          <div style={{ fontSize: 13, color: '#94a3b8', marginTop: 4 }}>每封间隔 5-10 秒，防止邮箱封禁</div>
+          <div style={{ fontSize: 13, color: '#94a3b8', marginTop: 4 }}>每封间隔 2-3 分钟 · 请勿关闭本页面</div>
         </div>
       )}
 
