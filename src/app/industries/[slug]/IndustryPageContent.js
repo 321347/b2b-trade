@@ -20,7 +20,7 @@ export default function IndustryPageContent({ slug }) {
       {/* 页头 */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 32 }}>
         <div style={{ fontSize: 48, width: 80, height: 80, background: '#eff6ff', borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          {industry.icon}
+          <IndustryIcon slug={industry.slug} size={32} />
         </div>
         <div>
           <h1 style={{ fontSize: 28, fontWeight: 800, color: '#0f172a', margin: '0 0 6px' }}>
