@@ -117,7 +117,7 @@ export default function IndustryPageContent({ slug }) {
             {relatedIndustries.map(r => (
               <Link key={r.slug} href={`/industries/${r.slug}`}
                 style={{ padding: '8px 18px', background: '#f5f5f5', borderRadius: 20, fontSize: 14, color: '#475569', textDecoration: 'none' }}>
-                {r.icon} {r.zh}
+                <IndustryIcon slug={r.slug} size={16} /> {r.zh}
               </Link>
             ))}
           </div>
