@@ -1,14 +1,26 @@
 'use client';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Check, X, Flame } from 'lucide-react';
 
 export default function Pricing() {
   const [billing, setBilling] = useState('monthly');
   const [showContact, setShowContact] = useState(false);
+  const router = useRouter();
+
+  function handleUpgrade(planKey) {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    if (!token) {
+      localStorage.setItem('redirect', `/payment?plan=${planKey}&billing=${billing}`);
+      window.location.href = '/login';
+    } else {
+      router.push(`/payment?plan=${planKey}&billing=${billing}`);
+    }
+  }
 
   const plans = [
     {
-      name: '免费版', price: 0, yearlyPrice: 0, period: '永久免费',
+      name: '免费版', planKey: 'free', price: 0, yearlyPrice: 0, period: '永久免费',
       features: [
         { text: '10 次搜索/月', included: true },
         { text: '邮箱查找（打码）', included: true },
@@ -23,7 +35,7 @@ export default function Pricing() {
       btn: '免费注册', href: '/register', style: 'outline',
     },
     {
-      name: '入门版', price: 49, yearlyPrice: 39, period: '/月',
+      name: '入门版', planKey: 'starter', price: 49, yearlyPrice: 39, period: '/月',
       features: [
         { text: '100 次搜索/月', included: true, bold: true },
         { text: '邮箱查找（打码）', included: true },
@@ -35,10 +47,10 @@ export default function Pricing() {
         { text: '自定义品类', included: false },
         { text: 'API 接入', included: false },
       ],
-      btn: '立即升级', onClick: () => setShowContact(true), style: 'light',
+      btn: '立即升级', onClick: () => handleUpgrade('starter'), style: 'light',
     },
     {
-      name: '基础版', price: 99, yearlyPrice: 79, period: '/月',
+      name: '基础版', planKey: 'basic', price: 99, yearlyPrice: 79, period: '/月',
       features: [
         { text: '300 次搜索/月', included: true, bold: true },
         { text: '邮箱查找（完整）', included: true },
@@ -50,10 +62,10 @@ export default function Pricing() {
         { text: '自定义品类', included: false },
         { text: 'API 接入', included: false },
       ],
-      btn: '立即升级', onClick: () => setShowContact(true), style: 'light',
+      btn: '立即升级', onClick: () => handleUpgrade('basic'), style: 'light',
     },
     {
-      name: '专业版', price: 199, yearlyPrice: 159, period: '/月',
+      name: '专业版', planKey: 'pro', price: 199, yearlyPrice: 159, period: '/月',
       features: [
         { text: '800 次搜索/月', included: true, bold: true },
         { text: '邮箱查找（完整）', included: true },
@@ -65,10 +77,10 @@ export default function Pricing() {
         { text: '自定义品类', included: true },
         { text: 'API 接入', included: false },
       ],
-      btn: '立即升级', onClick: () => setShowContact(true), primary: true, style: 'primary',
+      btn: '立即升级', onClick: () => handleUpgrade('pro'), primary: true, style: 'primary',
     },
     {
-      name: '企业版', price: 399, yearlyPrice: 319, period: '/月',
+      name: '企业版', planKey: 'enterprise', price: 399, yearlyPrice: 319, period: '/月',
       features: [
         { text: '2000 次搜索/月', included: true, bold: true },
         { text: '邮箱查找（完整）', included: true },
@@ -81,7 +93,7 @@ export default function Pricing() {
         { text: 'API 接入 + 专属客服', included: true },
         { text: '团队账号（10人）', included: true },
       ],
-      btn: '联系客服', onClick: () => setShowContact(true), style: 'dark',
+      btn: '立即升级', onClick: () => handleUpgrade('enterprise'), style: 'dark',
     },
   ];
 
@@ -165,13 +177,20 @@ export default function Pricing() {
               </ul>
 
               {p.onClick ? (
-                <button onClick={p.onClick} style={{
-                  display: 'block', width: '100%', padding: 12, borderRadius: 8, fontSize: 14, fontWeight: 600, textAlign: 'center', cursor: 'pointer', marginTop: 'auto',
-                  background: p.style === 'dark' ? '#0f172a' : p.style === 'primary' ? '#2563eb' : p.style === 'light' ? '#f1f5f9' : 'transparent',
-                  color: p.style === 'dark' || p.style === 'primary' ? '#fff' : p.style === 'outline' ? '#2563eb' : '#334155',
-                  border: p.style === 'outline' ? '2px solid #2563eb' : p.style === 'light' ? '1px solid #e5e7eb' : 'none',
-                  boxShadow: p.style === 'primary' ? '0 2px 8px rgba(37,99,235,0.2)' : 'none',
-                }}>{p.btn}</button>
+                <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <button onClick={p.onClick} style={{
+                    display: 'block', width: '100%', padding: 12, borderRadius: 8, fontSize: 14, fontWeight: 600, textAlign: 'center', cursor: 'pointer',
+                    background: p.style === 'dark' ? '#0f172a' : p.style === 'primary' ? '#2563eb' : p.style === 'light' ? '#f1f5f9' : 'transparent',
+                    color: p.style === 'dark' || p.style === 'primary' ? '#fff' : p.style === 'outline' ? '#2563eb' : '#334155',
+                    border: p.style === 'outline' ? '2px solid #2563eb' : p.style === 'light' ? '1px solid #e5e7eb' : 'none',
+                    boxShadow: p.style === 'primary' ? '0 2px 8px rgba(37,99,235,0.2)' : 'none',
+                  }}>{p.btn}</button>
+                  {p.planKey === 'enterprise' && (
+                    <button onClick={() => setShowContact(true)} style={{
+                      display: 'block', width: '100%', padding: 8, borderRadius: 8, fontSize: 12, color: '#94a3b8', background: 'transparent', border: 'none', cursor: 'pointer',
+                    }}>或 联系客服 · 可开票</button>
+                  )}
+                </div>
               ) : (
                 <a href={p.href} style={{
                   display: 'block', padding: 12, borderRadius: 8, textDecoration: 'none', fontSize: 14, fontWeight: 600, textAlign: 'center', marginTop: 'auto',
