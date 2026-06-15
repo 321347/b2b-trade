@@ -1,6 +1,7 @@
 // 行业数据 - 用于品类着陆页
 export const INDUSTRIES = {
   kitchen: {
+    zh: '厨房小工具', slug: 'kitchen',
     keywords: ['Garlic Press', 'Spiralizer', 'Peeler', 'Grater', 'Kitchen Scale'],
     count: 8420, countries: 24, emails: 4100,
     hotCountries: [
@@ -20,6 +21,7 @@ export const INDUSTRIES = {
     related: ['home', 'beauty', 'party'],
   },
   pet: {
+    zh: '宠物用品', slug: 'pet',
     keywords: ['Pet Toys', 'Dog Beds', 'Cat Scratchers', 'Pet Bowls', 'Grooming Tools'],
     count: 7650, countries: 22, emails: 3800,
     hotCountries: [
@@ -39,6 +41,7 @@ export const INDUSTRIES = {
     related: ['home', 'toys', 'beauty'],
   },
   gift: {
+    zh: '礼品纪念品', slug: 'gift',
     keywords: ['Fridge Magnets', 'Keychains', 'Mugs', 'Photo Frames', 'Candles'],
     count: 6230, countries: 20, emails: 3100,
     hotCountries: [
@@ -58,6 +61,7 @@ export const INDUSTRIES = {
     related: ['home', 'party', 'stationery'],
   },
   home: {
+    zh: '家居园艺', slug: 'home',
     keywords: ['Cushion Covers', 'Throw Blankets', 'Wall Art', 'Vases', 'Planters'],
     count: 9870, countries: 26, emails: 5200,
     hotCountries: [
@@ -77,6 +81,7 @@ export const INDUSTRIES = {
     related: ['kitchen', 'furniture', 'lighting'],
   },
   beauty: {
+    zh: '美妆个护', slug: 'beauty',
     keywords: ['Makeup Brushes', 'Cosmetic Bags', 'Hair Accessories', 'Beauty Sponges'],
     count: 8940, countries: 24, emails: 4600,
     hotCountries: [
@@ -96,6 +101,7 @@ export const INDUSTRIES = {
     related: ['kitchen', 'health', 'stationery'],
   },
   stationery: {
+    zh: '文具办公', slug: 'stationery',
     keywords: ['Notebooks', 'Pens', 'Sticky Notes', 'Desk Organizers', 'File Folders'],
     count: 5120, countries: 18, emails: 2600,
     hotCountries: [
@@ -115,6 +121,7 @@ export const INDUSTRIES = {
     related: ['gift', 'toys', 'bag'],
   },
   toys: {
+    zh: '玩具游戏', slug: 'toys',
     keywords: ['Plush Toys', 'Puzzle Games', 'Fidget Toys', 'Board Games', 'Educational Toys'],
     count: 7230, countries: 22, emails: 3700,
     hotCountries: [
@@ -134,6 +141,7 @@ export const INDUSTRIES = {
     related: ['baby', 'pet', 'gift'],
   },
   outdoor: {
+    zh: '户外运动', slug: 'outdoor',
     keywords: ['Yoga Mats', 'Water Bottles', 'Camping Tools', 'Gym Bags', 'Cycling Accessories'],
     count: 8120, countries: 24, emails: 4300,
     hotCountries: [
@@ -153,6 +161,7 @@ export const INDUSTRIES = {
     related: ['health', 'toys', 'bag'],
   },
   electronics: {
+    zh: '电子配件', slug: 'electronics',
     keywords: ['Phone Cases', 'Chargers', 'Power Banks', 'Cables', 'Bluetooth Speakers'],
     count: 12540, countries: 28, emails: 6800,
     hotCountries: [
@@ -172,6 +181,7 @@ export const INDUSTRIES = {
     related: ['home', 'outdoor', 'car'],
   },
   fashion: {
+    zh: '服饰鞋包', slug: 'fashion',
     keywords: ['Women Dresses', 'Men Jackets', 'Sneakers', 'Handbags', 'Scarves'],
     count: 10280, countries: 26, emails: 5400,
     hotCountries: [
@@ -191,6 +201,7 @@ export const INDUSTRIES = {
     related: ['bag', 'beauty', 'textile'],
   },
   baby: {
+    zh: '母婴用品', slug: 'baby',
     keywords: ['Baby Strollers', 'Baby Clothes', 'Diaper Bags', 'Baby Toys', 'Feeding Bottles'],
     count: 6480, countries: 20, emails: 3200,
     hotCountries: [
@@ -210,6 +221,7 @@ export const INDUSTRIES = {
     related: ['toys', 'fashion', 'health'],
   },
   car: {
+    zh: '汽车配件', slug: 'car',
     keywords: ['Brake Pads', 'Oil Filters', 'Car Lights', 'Suspension Parts', 'Car Electronics'],
     count: 11200, countries: 28, emails: 5800,
     hotCountries: [
@@ -229,6 +241,7 @@ export const INDUSTRIES = {
     related: ['hardware', 'electronics', 'outdoor'],
   },
   hardware: {
+    zh: '五金工具', slug: 'hardware',
     keywords: ['Hand Tools', 'Power Tools', 'Fasteners', 'Wrenches', 'Drill Bits'],
     count: 8760, countries: 24, emails: 4500,
     hotCountries: [
@@ -248,6 +261,7 @@ export const INDUSTRIES = {
     related: ['car', 'home', 'kitchen'],
   },
   party: {
+    zh: '派对节庆', slug: 'party',
     keywords: ['Balloons', 'Party Hats', 'Confetti', 'Banners', 'Christmas Decorations'],
     count: 5890, countries: 18, emails: 2900,
     hotCountries: [
@@ -267,6 +281,7 @@ export const INDUSTRIES = {
     related: ['gift', 'home', 'toys'],
   },
   health: {
+    zh: '健康护理', slug: 'health',
     keywords: ['Massage Guns', 'Fitness Trackers', 'First Aid Kits', 'Pill Organizers', 'Thermometers'],
     count: 7340, countries: 22, emails: 3800,
     hotCountries: [
@@ -286,6 +301,7 @@ export const INDUSTRIES = {
     related: ['beauty', 'outdoor', 'baby'],
   },
   lighting: {
+    zh: '灯具照明', slug: 'lighting',
     keywords: ['LED Bulbs', 'Smart Lights', 'Outdoor Lights', 'Pendant Lamps', 'Solar Lights'],
     count: 6780, countries: 22, emails: 3400,
     hotCountries: [
@@ -305,6 +321,7 @@ export const INDUSTRIES = {
     related: ['home', 'electronics', 'outdoor'],
   },
   textile: {
+    zh: '家纺面料', slug: 'textile',
     keywords: ['Cotton Fabric', 'Polyester', 'Bed Sheets', 'Towels', 'Curtains'],
     count: 7120, countries: 22, emails: 3600,
     hotCountries: [
@@ -324,6 +341,7 @@ export const INDUSTRIES = {
     related: ['fashion', 'home', 'baby'],
   },
   furniture: {
+    zh: '家具家装', slug: 'furniture',
     keywords: ['Office Chairs', 'Dining Tables', 'Shelving', 'Sofas', 'Storage Cabinets'],
     count: 9450, countries: 24, emails: 4800,
     hotCountries: [
@@ -343,6 +361,7 @@ export const INDUSTRIES = {
     related: ['home', 'lighting', 'kitchen'],
   },
   bag: {
+    zh: '箱包旅行', slug: 'bag',
     keywords: ['Backpacks', 'Travel Bags', 'Laptop Bags', 'Tote Bags', 'Luggage'],
     count: 6340, countries: 20, emails: 3200,
     hotCountries: [
@@ -362,6 +381,7 @@ export const INDUSTRIES = {
     related: ['fashion', 'outdoor', 'stationery'],
   },
   watches: {
+    zh: '手表眼镜', slug: 'watches',
     keywords: ['Smart Watches', 'Fashion Watches', 'Sunglasses', 'Reading Glasses', 'Watch Bands'],
     count: 5780, countries: 20, emails: 2900,
     hotCountries: [

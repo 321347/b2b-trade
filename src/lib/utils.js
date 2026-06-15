@@ -1,5 +1,10 @@
 const S = typeof window === 'undefined' ? null : window.localStorage;
 
+export function getUserName(user) {
+  if (!user) return '';
+  return user.name || user.user_metadata?.name || (user.email ? user.email.split('@')[0] : '');
+}
+
 export const MARKETS = ['英国', '美国', '德国', '法国', '意大利', '西班牙', '荷兰', '澳大利亚', '阿联酋', '日本', '韩国', '加拿大', '巴西', '印度', '全球'];
 
 export const INDUSTRY_GROUPS = [

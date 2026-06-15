@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { getUserName } from '@/lib/utils';
 
 export default function Dashboard() {
   const [data, setData] = useState(null);
@@ -43,7 +44,7 @@ export default function Dashboard() {
     <div style={{ maxWidth: 800, margin: '0 auto', padding: '40px 20px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
         <div>
-          <h1 style={{ fontSize: 28, fontWeight: 700, color: '#0f172a', margin: 0 }}>Hi, {data.user?.name || user.name}</h1>
+          <h1 style={{ fontSize: 28, fontWeight: 700, color: '#0f172a', margin: 0 }}>Hi, {getUserName(data.user) || getUserName(user)}</h1>
           <p style={{ color: '#94a3b8', margin: '4px 0 0', fontSize: 14 }}>{user.email || data.user?.email}</p>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>

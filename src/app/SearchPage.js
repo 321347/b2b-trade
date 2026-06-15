@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { Check } from 'lucide-react';
-import { maskEmail, loadHistory, saveHistory, authHeaders, MARKETS, INDUSTRY_GROUPS } from '@/lib/utils';
+import { maskEmail, loadHistory, saveHistory, authHeaders, MARKETS, INDUSTRY_GROUPS, getUserName } from '@/lib/utils';
 import { IndustryIcon } from '@/lib/icon-map';
 
 export default function SearchPage({ variant = 'home' }) {
@@ -136,9 +136,9 @@ export default function SearchPage({ variant = 'home' }) {
           {isHome ? (hasResults ? '搜索海外采购商' : '搜索海外采购商，获取决策人邮箱') : '搜索海外采购商'}
         </h1>
         {isHome && !hasResults && <p style={{ fontSize: 15, color: '#64748b', maxWidth: 480, margin: '0 auto 6px' }}>
-          {user ? `Hi, ${user.name}${quota ? `（剩余 ${quota.remaining} 次）` : ''}` : '选择你的行业，找到正在采购的海外公司'}
+          {user ? `Hi, ${getUserName(user)}${quota ? `（剩余 ${quota.remaining} 次）` : ''}` : '选择你的行业，找到正在采购的海外公司'}
         </p>}
-        {!isHome && !hasResults && <p style={{ fontSize: 14, color: '#94a3b8', margin: '0 0 16px' }}>{user ? `Hi, ${user.name}${quota ? '（剩余 ' + quota.remaining + ' 次）' : ''}` : '选择行业开始搜索'}</p>}
+        {!isHome && !hasResults && <p style={{ fontSize: 14, color: '#94a3b8', margin: '0 0 16px' }}>{user ? `Hi, ${getUserName(user)}${quota ? '（剩余 ' + quota.remaining + ' 次）' : ''}` : '选择行业开始搜索'}</p>}
 
         {/* 行业卡片 */}
         {!hasResults && (

@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Globe } from 'lucide-react';
+import { getUserName } from '@/lib/utils';
 
 export default function Nav() {
   const [user, setUser] = useState(null);
@@ -27,7 +28,7 @@ export default function Nav() {
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         {user ? (
           <>
-            <a href="/dashboard" style={{ fontSize: 14, color: '#64748b', textDecoration: 'none' }}>{user.name || user.email}</a>
+            <a href="/dashboard" style={{ fontSize: 14, color: '#64748b', textDecoration: 'none' }}>{getUserName(user) || user.email}</a>
             <button onClick={() => { localStorage.removeItem('user'); localStorage.removeItem('token'); window.location.href = '/'; }} style={{ fontSize: 13, color: '#94a3b8', background: 'none', border: 'none', cursor: 'pointer' }}>退出</button>
           </>
         ) : (

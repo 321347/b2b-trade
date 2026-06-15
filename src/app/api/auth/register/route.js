@@ -22,10 +22,9 @@ export async function POST(req) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
 
-  const resp = { ok: true, user: data.user };
+  const resp = { ok: true, user: { id: data.user.id, email: data.user.email, name: name || email.split('@')[0], plan: 'free' } };
   if (data.session) {
     resp.session = { access_token: data.session.access_token, expires_at: data.session.expires_at };
-    resp.user = { id: data.user.id, email: data.user.email, name: name || email.split('@')[0] };
   }
   return NextResponse.json(resp);
 }
