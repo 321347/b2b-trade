@@ -13,7 +13,7 @@ export async function POST(req) {
   const { user, error } = await requireAuth(req);
   if (error) return error;
 
-  const { planKey, billing } = await req.json();
+  const { planKey, billing, payType } = await req.json();
   const plan = PLANS[planKey];
   if (!plan || plan.price <= 0) return NextResponse.json({ error: '无效套餐' }, { status: 400 });
 
@@ -32,6 +32,7 @@ export async function POST(req) {
     planKey,
     notifyUrl,
     returnUrl: `${siteUrl}/payment?order=${orderNo}`,
+    payType: payType || 'W-NATIVE',
   });
 
   // 先将订单存入 Redis，回调时取出校验

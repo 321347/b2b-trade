@@ -32,7 +32,7 @@ export function getPaymentUrl() {
   return `${API_BASE}/pay/app-request`;
 }
 
-export function buildOrderParams({ orderNo, amount, userId, planKey, notifyUrl, returnUrl }) {
+export function buildOrderParams({ orderNo, amount, userId, planKey, notifyUrl, returnUrl, payType }) {
   const { mchId, privateKey } = getConfig();
 
   const params = {
@@ -44,6 +44,7 @@ export function buildOrderParams({ orderNo, amount, userId, planKey, notifyUrl, 
     name_goods: `跨境蜂-${planKey}`,
     info_order: `升级套餐: ${planKey}`,
     notify_url: notifyUrl,
+    pay_type: payType || 'W-NATIVE',
     user_id: userId,
     risk_item: JSON.stringify({ user_info_mercht_userno: userId }),
   };
