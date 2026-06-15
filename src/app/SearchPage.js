@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Check } from 'lucide-react';
 import { maskEmail, loadHistory, saveHistory, authHeaders, MARKETS, INDUSTRY_GROUPS } from '@/lib/utils';
+import { IndustryIcon } from '@/lib/icon-map';
 
 export default function SearchPage({ variant = 'home' }) {
   const [user, setUser] = useState(null);
@@ -150,7 +151,7 @@ export default function SearchPage({ variant = 'home' }) {
                   color: selectedIndustry?.key === ind.key ? '#fff' : '#334155', fontWeight: selectedIndustry?.key === ind.key ? 600 : 400,
                   transition: 'all 0.15s',
                 }}>
-                <div style={{ fontSize: 24, marginBottom: 4 }}>{ind.emoji}</div>
+                <div style={{ marginBottom: 4 }}><IndustryIcon slug={ind.key} size={22} /></div>
                 <div>{ind.label}</div>
               </button>
             ))}
@@ -160,7 +161,7 @@ export default function SearchPage({ variant = 'home' }) {
         {/* 品类按钮 + 市场选择 */}
         {selectedIndustry && !hasResults && (
           <div style={{ marginTop: 8, marginBottom: 16 }}>
-            <div style={{ fontSize: 13, color: '#64748b', marginBottom: 10 }}>{selectedIndustry.emoji} {selectedIndustry.label} · 热门产品（点一下直接搜）：</div>
+            <div style={{ fontSize: 13, color: '#64748b', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 4 }}><IndustryIcon slug={selectedIndustry.key} size={16} /> {selectedIndustry.label} · 热门产品（点一下直接搜）：</div>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 12 }}>
               {selectedIndustry.products.map(p => (
                 <button key={p} onClick={() => handleProductClick(p)}
