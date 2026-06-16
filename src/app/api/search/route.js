@@ -33,7 +33,7 @@ export async function POST(req) {
 
   // === 2. 用户套餐配额检查 ===
   const userQuota = await getUserQuota(req);
-  if (userQuota.remaining === 0) return NextResponse.json({ error: '本月搜索次数已用完，请升级套餐', quota: userQuota }, { status: 429 });
+  if (userQuota.remaining <= 0) return NextResponse.json({ error: '本月搜索次数已用完，请升级套餐', quota: userQuota }, { status: 429 });
 
   // === 3. MX 域名验证 ===
   const mxCheck = await checkDomainMX(cleanDomain);
@@ -59,7 +59,8 @@ export async function POST(req) {
   }
 
   // 消耗用户套餐配额
-  await decrementQuota(req);
+  const qr = await decrementQuota(req);
+  const finalQuota = qr || userQuota;
 
   // 按置信度排序
   const allEmails = (apiResult.emails || []).sort((a, b) => (b.confidence || 0) - (a.confidence || 0));

@@ -1,26 +1,30 @@
 import { NextResponse } from 'next/server';
 import { Redis } from '@upstash/redis';
 import { verifyNotify } from '@/lib/lianlian';
-import { setUserPlan } from '@/lib/plans';
-
 function getRedis() {
   if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) return null;
   return new Redis({ url: process.env.UPSTASH_REDIS_REST_URL, token: process.env.UPSTASH_REDIS_REST_TOKEN });
 }
 
 export async function POST(req) {
+  // 先读文本再解析，避免 json() 消费 body 后 formData() 失败
   let body;
   try {
-    body = await req.json();
+    const text = await req.text();
+    try {
+      body = JSON.parse(text);
+    } catch {
+      // 表单格式：key=value&key=value
+      body = Object.fromEntries(new URLSearchParams(text));
+    }
   } catch {
-    // 表单格式或其他
-    body = Object.fromEntries(await req.formData());
+    return NextResponse.json({ ret_code: '9999', ret_msg: '无法解析请求体' });
   }
 
   if (!body.no_order) return NextResponse.json({ ret_code: '9999', ret_msg: 'Missing order no' });
 
   const orderNo = body.no_order;
-  const payStatus = body.result_pay || body.trade_state;
+  const payStatus = String(body.result_pay ?? body.trade_state ?? '');
 
   // 校验签名
   if (!verifyNotify(body)) {
@@ -35,24 +39,23 @@ export async function POST(req) {
   // 查订单
   const redis = getRedis();
   let order;
-  if (redis) {
-    const raw = await redis.get(`order:${orderNo}`);
-    if (raw) { order = JSON.parse(raw); await redis.del(`order:${orderNo}`); }
-  } else {
-    order = global._orders?.get(orderNo);
-    if (order) global._orders.delete(orderNo);
-  }
-
-  if (!order) {
-    // 兜底：直接用回传的 user_id 和金额匹配
-  }
+  try {
+    if (redis) {
+      const raw = await redis.get(`order:${orderNo}`);
+      if (raw) { order = JSON.parse(raw); await redis.del(`order:${orderNo}`); }
+    } else {
+      order = global._orders?.get(orderNo);
+      if (order) global._orders.delete(orderNo);
+    }
+  } catch {}
 
   // 按金额匹配套餐
   const { setUserPlan } = await import('@/lib/plans');
   const planKey = order?.planKey || guessPlanByAmount(body.money_order);
+  const userId = order?.userId || body.user_id;
 
-  if (order?.userId) {
-    await setUserPlan(order.userId, planKey);
+  if (userId && planKey && planKey !== 'free') {
+    await setUserPlan(userId, planKey);
   }
 
   return NextResponse.json({ ret_code: '0000', ret_msg: 'ok' });
@@ -60,9 +63,10 @@ export async function POST(req) {
 
 function guessPlanByAmount(amountStr) {
   const amount = parseInt(amountStr) / 100;
+  if (isNaN(amount)) return null;
   if (amount >= 399) return 'enterprise';
   if (amount >= 199) return 'pro';
   if (amount >= 99) return 'basic';
   if (amount >= 49) return 'starter';
-  return 'free';
+  return null;
 }

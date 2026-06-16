@@ -17,6 +17,7 @@ export default function Send() {
   const [aiLoading, setAiLoading] = useState(false);
   // 签名
   const [signature, setSignature] = useState('');
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const S = typeof window !== 'undefined' ? window.localStorage : null;
 
@@ -33,13 +34,14 @@ export default function Send() {
     const sp = new URLSearchParams(window.location.search);
     if (sp.get('to')) setForm(prev => ({ ...prev, email: sp.get('to') || '', company: sp.get('domain') || '' }));
   }, []);
-  if (!auth) return <div style={{ padding: 40, textAlign: 'center', color: '#94a3b8' }}>请先登录...</div>;
 
   useEffect(() => {
     fetch('/api/dashboard', { headers: authHeaders() }).then(r => r.json()).then(d => {
       if (d.sendLimit) setSendLimit(d.sendLimit);
     }).catch(() => {});
   }, []);
+
+  if (!auth) return <div style={{ padding: 40, textAlign: 'center', color: '#94a3b8' }}>请先登录...</div>;
 
   const update = (k, v) => setForm(prev => ({ ...prev, [k]: v }));
   const inp = (k, ph, type) => <input type={type || 'text'} placeholder={ph} value={form[k]} onChange={e => update(k, e.target.value)} style={{ width:'100%', padding:10, borderRadius:8, border:'1px solid #d1d5db', background:'#fff', fontSize:14, marginBottom:10, outline:'none' }} />;
@@ -203,6 +205,10 @@ export default function Send() {
             <button type="submit" disabled={loading} style={{ background:'#2563eb',color:'#fff',border:'none',padding:'12px 28px',borderRadius:8,cursor:'pointer',fontSize:15,fontWeight:600 }}>
               {loading ? '发送中...' : '发送'}
             </button>
+            <button type="button" onClick={() => setPreviewOpen(true)}
+              style={{ padding:'12px 20px',borderRadius:8,border:'1px solid #d1d5db',background:'#fff',color:'#64748b',fontSize:14,cursor:'pointer' }}>
+              预览
+            </button>
             <a href="/search" style={{ padding:'12px 20px',borderRadius:8,border:'1px solid #e5e7eb',color:'#64748b',fontSize:14,textDecoration:'none' }}>去搜索客户</a>
           </div>
         </form>
@@ -239,6 +245,33 @@ info@import.com, Jane, XYZ Import
                 </ul>
               )}
             </div>}
+        </div>
+      )}
+
+      {/* 邮件预览弹窗 */}
+      {previewOpen && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }} onClick={() => setPreviewOpen(false)}>
+          <div style={{ background: '#fff', borderRadius: 12, maxWidth: 650, width: '100%', maxHeight: '90vh', overflow: 'auto', boxShadow: '0 20px 60px rgba(0,0,0,0.2)' }} onClick={e => e.stopPropagation()}>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontWeight: 600, color: '#0f172a' }}>邮件预览</span>
+              <button onClick={() => setPreviewOpen(false)} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#94a3b8', lineHeight: 1 }}>×</button>
+            </div>
+            <div style={{ padding: 20 }}>
+              <div style={{ marginBottom: 12, fontSize: 13, color: '#94a3b8' }}>
+                <span style={{ fontWeight: 500 }}>From:</span> {signature ? signature.split('\n')[0] : '你的名称'} &lt;{form.email || 'your@email.com'}&gt;<br/>
+                <span style={{ fontWeight: 500 }}>To:</span> {form.email || '客户邮箱'}<br/>
+                <span style={{ fontWeight: 500 }}>Subject:</span> {form.subject || 'Business Inquiry'}
+              </div>
+              <div style={{ background: '#f8fafc', borderRadius: 8, padding: 16, fontSize: 14, color: '#334155', lineHeight: 1.8, whiteSpace: 'pre-wrap', fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif' }}>
+                {applyTemplate(form.body) || <span style={{ color: '#94a3b8' }}>邮件正文为空，请先填写内容或使用 AI 生成</span>}
+              </div>
+            </div>
+            <div style={{ padding: '12px 20px', borderTop: '1px solid #e5e7eb', display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+              <button onClick={() => setPreviewOpen(false)} style={{ padding: '8px 20px', borderRadius: 6, border: '1px solid #e5e7eb', background: '#fff', cursor: 'pointer' }}>关闭</button>
+              <button onClick={() => { setPreviewOpen(false); document.querySelector('button[type="submit"]')?.click(); }}
+                style={{ padding: '8px 20px', borderRadius: 6, border: 'none', background: '#2563eb', color: '#fff', cursor: 'pointer', fontWeight: 500 }}>确认发送</button>
+            </div>
+          </div>
         </div>
       )}
     </div>

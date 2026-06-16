@@ -179,7 +179,7 @@ export default function Pricing() {
               {p.onClick ? (
                 <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: 6 }}>
                   <button onClick={p.onClick} style={{
-                    display: 'block', width: '100%', padding: 12, borderRadius: 8, fontSize: 14, fontWeight: 600, textAlign: 'center', cursor: 'pointer',
+                    display: 'block', width: '100%', padding: 12, borderRadius: 8, fontSize: 14, fontWeight: 600, textAlign: 'center', cursor: 'pointer', whiteSpace: 'nowrap',
                     background: p.style === 'dark' ? '#0f172a' : p.style === 'primary' ? '#2563eb' : p.style === 'light' ? '#f1f5f9' : 'transparent',
                     color: p.style === 'dark' || p.style === 'primary' ? '#fff' : p.style === 'outline' ? '#2563eb' : '#334155',
                     border: p.style === 'outline' ? '2px solid #2563eb' : p.style === 'light' ? '1px solid #e5e7eb' : 'none',
@@ -187,13 +187,13 @@ export default function Pricing() {
                   }}>{p.btn}</button>
                   {p.planKey === 'enterprise' && (
                     <button onClick={() => setShowContact(true)} style={{
-                      display: 'block', width: '100%', padding: 8, borderRadius: 8, fontSize: 12, color: '#94a3b8', background: 'transparent', border: 'none', cursor: 'pointer',
+                      display: 'block', width: '100%', padding: 8, borderRadius: 8, fontSize: 12, color: '#94a3b8', background: 'transparent', border: 'none', cursor: 'pointer', whiteSpace: 'nowrap',
                     }}>或 联系客服 · 可开票</button>
                   )}
                 </div>
               ) : (
                 <a href={p.href} style={{
-                  display: 'block', padding: 12, borderRadius: 8, textDecoration: 'none', fontSize: 14, fontWeight: 600, textAlign: 'center', marginTop: 'auto',
+                  display: 'block', padding: 12, borderRadius: 8, textDecoration: 'none', fontSize: 14, fontWeight: 600, textAlign: 'center', marginTop: 'auto', whiteSpace: 'nowrap',
                   background: p.style === 'dark' ? '#0f172a' : 'transparent',
                   color: p.style === 'outline' ? '#2563eb' : '#fff',
                   border: p.style === 'outline' ? '2px solid #2563eb' : 'none',
@@ -210,23 +210,23 @@ export default function Pricing() {
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14, background: '#fff', borderRadius: 12, overflow: 'hidden', border: '1px solid #e5e7eb' }}>
           <thead>
             <tr style={{ background: '#f8fafc' }}>
-              <th style={{ padding: '14px 12px', textAlign: 'left', fontWeight: 600, color: '#0f172a', borderBottom: '2px solid #e5e7eb', fontSize: 13 }}>功能</th>
-              <th style={{ padding: '14px 8px', textAlign: 'center', fontWeight: 600, color: '#0f172a', borderBottom: '2px solid #e5e7eb', fontSize: 13 }}>免费</th>
-              <th style={{ padding: '14px 8px', textAlign: 'center', fontWeight: 600, color: '#0f172a', borderBottom: '2px solid #e5e7eb', fontSize: 13 }}>入门</th>
-              <th style={{ padding: '14px 8px', textAlign: 'center', fontWeight: 600, color: '#0f172a', borderBottom: '2px solid #e5e7eb', fontSize: 13 }}>基础</th>
-              <th style={{ padding: '14px 8px', textAlign: 'center', fontWeight: 600, color: '#2563eb', borderBottom: '2px solid #e5e7eb', fontSize: 13 }}>专业</th>
-              <th style={{ padding: '14px 8px', textAlign: 'center', fontWeight: 600, color: '#0f172a', borderBottom: '2px solid #e5e7eb', fontSize: 13 }}>企业</th>
+              <th style={{ padding: '14px 12px', textAlign: 'left', fontWeight: 600, color: '#0f172a', borderBottom: '2px solid #e5e7eb', fontSize: 13, whiteSpace: 'nowrap' }}>功能</th>
+              <th style={{ padding: '14px 8px', textAlign: 'center', fontWeight: 600, color: '#0f172a', borderBottom: '2px solid #e5e7eb', fontSize: 13, whiteSpace: 'nowrap' }}>免费</th>
+              <th style={{ padding: '14px 8px', textAlign: 'center', fontWeight: 600, color: '#0f172a', borderBottom: '2px solid #e5e7eb', fontSize: 13, whiteSpace: 'nowrap' }}>入门</th>
+              <th style={{ padding: '14px 8px', textAlign: 'center', fontWeight: 600, color: '#0f172a', borderBottom: '2px solid #e5e7eb', fontSize: 13, whiteSpace: 'nowrap' }}>基础</th>
+              <th style={{ padding: '14px 8px', textAlign: 'center', fontWeight: 600, color: '#2563eb', borderBottom: '2px solid #e5e7eb', fontSize: 13, whiteSpace: 'nowrap' }}>专业</th>
+              <th style={{ padding: '14px 8px', textAlign: 'center', fontWeight: 600, color: '#0f172a', borderBottom: '2px solid #e5e7eb', fontSize: 13, whiteSpace: 'nowrap' }}>企业</th>
             </tr>
           </thead>
           <tbody>
             {compareRows.map((row, i) => (
               <tr key={row.feature} style={{ borderBottom: '1px solid #f0f0f0' }}>
-                <td style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 500, color: '#333', fontSize: 13 }}>{row.feature}</td>
-                <td style={{ padding: '10px 8px', textAlign: 'center', color: '#64748b', fontSize: 13 }}><CellValue val={row.free} /></td>
-                <td style={{ padding: '10px 8px', textAlign: 'center', color: '#64748b', fontSize: 13 }}><CellValue val={row.starter} /></td>
-                <td style={{ padding: '10px 8px', textAlign: 'center', color: '#64748b', fontSize: 13 }}><CellValue val={row.basic} /></td>
-                <td style={{ padding: '10px 8px', textAlign: 'center', color: '#64748b', fontSize: 13 }}><CellValue val={row.pro} /></td>
-                <td style={{ padding: '10px 8px', textAlign: 'center', color: '#64748b', fontSize: 13 }}><CellValue val={row.ent} /></td>
+                <td style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 500, color: '#333', fontSize: 13, whiteSpace: 'nowrap' }}>{row.feature}</td>
+                <td style={{ padding: '10px 8px', textAlign: 'center', color: '#64748b', fontSize: 13, whiteSpace: 'nowrap' }}><CellValue val={row.free} /></td>
+                <td style={{ padding: '10px 8px', textAlign: 'center', color: '#64748b', fontSize: 13, whiteSpace: 'nowrap' }}><CellValue val={row.starter} /></td>
+                <td style={{ padding: '10px 8px', textAlign: 'center', color: '#64748b', fontSize: 13, whiteSpace: 'nowrap' }}><CellValue val={row.basic} /></td>
+                <td style={{ padding: '10px 8px', textAlign: 'center', color: '#64748b', fontSize: 13, whiteSpace: 'nowrap' }}><CellValue val={row.pro} /></td>
+                <td style={{ padding: '10px 8px', textAlign: 'center', color: '#64748b', fontSize: 13, whiteSpace: 'nowrap' }}><CellValue val={row.ent} /></td>
               </tr>
             ))}
           </tbody>

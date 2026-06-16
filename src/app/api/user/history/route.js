@@ -22,7 +22,8 @@ export async function POST(req) {
   if (!Array.isArray(history)) return NextResponse.json({ error: '格式错误' }, { status: 400 });
 
   const supabase = getSupabase();
-  await supabase.auth.updateUser({ data: { searchHistory: history.slice(0, 20) } });
+  const { error: updateErr } = await supabase.auth.updateUser({ data: { searchHistory: history.slice(0, 20) } });
+  if (updateErr) return NextResponse.json({ error: '保存失败' }, { status: 500 });
 
   return NextResponse.json({ ok: true });
 }

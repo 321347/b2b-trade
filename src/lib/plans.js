@@ -18,8 +18,11 @@ export async function setUserPlan(userId, planKey) {
   if (!PLANS[planKey]) return { ok: false, error: '无效套餐' };
   try {
     const admin = getSupabaseAdmin();
+    // 先获取现有 metadata，避免覆盖 name/api_key/quota 等字段
+    const { data: { user } } = await admin.auth.admin.getUserById(userId);
+    const existingMeta = user?.user_metadata || {};
     await admin.auth.admin.updateUserById(userId, {
-      user_metadata: { plan: planKey },
+      user_metadata: { ...existingMeta, plan: planKey },
       app_metadata: { plan: planKey },
     });
     return { ok: true };

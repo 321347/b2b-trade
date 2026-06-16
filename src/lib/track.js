@@ -16,12 +16,15 @@ export async function createTrack(userId, recipient, domain, subject) {
 
 export async function createTracksBatch(userId, targets) {
   try {
-    const rows = targets.map(t => ({
-      user_id: userId,
-      recipient: t.email || t.to,
-      domain: t.domain || '',
-      subject: t.subject || '',
-    }));
+    const rows = targets
+      .filter(t => t.email || t.to)
+      .map(t => ({
+        user_id: userId,
+        recipient: t.email || t.to,
+        domain: t.domain || '',
+        subject: t.subject || '',
+      }));
+    if (rows.length === 0) return [];
     const { data, error } = await a().from('email_tracks').insert(rows).select('id');
     if (error) return [];
     return data.map(d => d.id);

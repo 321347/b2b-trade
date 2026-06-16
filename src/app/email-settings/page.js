@@ -93,7 +93,8 @@ export default function EmailSettings() {
   useEffect(() => {
     const u = localStorage.getItem('user');
     if (!u) { window.location.href = '/login'; return; }
-    setUser(JSON.parse(u));
+    try { setUser(JSON.parse(u)); }
+    catch { localStorage.removeItem('user'); window.location.href = '/login'; return; }
     fetch('/api/smtp-config', { headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') } })
       .then(r => r.json()).then(d => { if (d.config) setForm(d.config); });
   }, []);

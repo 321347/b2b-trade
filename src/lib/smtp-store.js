@@ -4,7 +4,8 @@ import crypto from 'crypto';
 const ALGO = 'aes-256-gcm';
 
 function getKey() {
-  const raw = process.env.SMTP_ENCRYPTION_KEY || 'b2b-trade-smtp-key-2024-default-32b';
+  const raw = process.env.SMTP_ENCRYPTION_KEY;
+  if (!raw) throw new Error('SMTP_ENCRYPTION_KEY 环境变量未设置');
   return crypto.createHash('sha256').update(raw).digest();
 }
 
@@ -33,14 +34,16 @@ function decrypt(payload) {
 }
 
 export async function saveSmtpConfig(userId, config) {
-  const supabase = getSupabase();
-  const encrypted = encrypt(JSON.stringify(config));
-  const { error } = await supabase.from('smtp_configs').upsert({
-    user_id: userId,
-    encrypted_config: encrypted,
-    updated_at: new Date().toISOString(),
-  }, { onConflict: 'user_id' });
-  return !error;
+  try {
+    const supabase = getSupabase();
+    const encrypted = encrypt(JSON.stringify(config));
+    const { error } = await supabase.from('smtp_configs').upsert({
+      user_id: userId,
+      encrypted_config: encrypted,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: 'user_id' });
+    return !error;
+  } catch { return false; }
 }
 
 export async function getSmtpConfig(userId) {

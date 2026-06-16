@@ -2,7 +2,7 @@
 export const INDUSTRIES = {
   kitchen: {
     zh: '厨房小工具', slug: 'kitchen',
-    keywords: ['Garlic Press', 'Spiralizer', 'Peeler', 'Grater', 'Kitchen Scale'],
+    keywords: ['压蒜器', '切菜器', '削皮器', '刨丝器', '厨房秤'],
     
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 2340 },
@@ -22,7 +22,7 @@ export const INDUSTRIES = {
   },
   pet: {
     zh: '宠物用品', slug: 'pet',
-    keywords: ['Pet Toys', 'Dog Beds', 'Cat Scratchers', 'Pet Bowls', 'Grooming Tools'],
+    keywords: ['宠物玩具', '狗窝', '猫抓板', '宠物碗', '美容工具'],
     
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 2100 },
@@ -42,7 +42,7 @@ export const INDUSTRIES = {
   },
   gift: {
     zh: '礼品纪念品', slug: 'gift',
-    keywords: ['Fridge Magnets', 'Keychains', 'Mugs', 'Photo Frames', 'Candles'],
+    keywords: ['冰箱贴', '钥匙扣', '马克杯', '相框', '蜡烛'],
     
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 1680 },
@@ -62,7 +62,7 @@ export const INDUSTRIES = {
   },
   home: {
     zh: '家居园艺', slug: 'home',
-    keywords: ['Cushion Covers', 'Throw Blankets', 'Wall Art', 'Vases', 'Planters'],
+    keywords: ['靠垫套', '休闲毯', '墙饰', '花瓶', '花盆'],
     
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 2860 },
@@ -82,7 +82,7 @@ export const INDUSTRIES = {
   },
   beauty: {
     zh: '美妆个护', slug: 'beauty',
-    keywords: ['Makeup Brushes', 'Cosmetic Bags', 'Hair Accessories', 'Beauty Sponges'],
+    keywords: ['化妆刷', '化妆包', '发饰', '美妆蛋'],
     
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 2480 },
@@ -102,7 +102,7 @@ export const INDUSTRIES = {
   },
   stationery: {
     zh: '文具办公', slug: 'stationery',
-    keywords: ['Notebooks', 'Pens', 'Sticky Notes', 'Desk Organizers', 'File Folders'],
+    keywords: ['笔记本', '笔', '便利贴', '桌面收纳', '文件夹'],
     
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 1380 },
@@ -122,7 +122,7 @@ export const INDUSTRIES = {
   },
   toys: {
     zh: '玩具游戏', slug: 'toys',
-    keywords: ['Plush Toys', 'Puzzle Games', 'Fidget Toys', 'Board Games', 'Educational Toys'],
+    keywords: ['毛绒玩具', '拼图游戏', '解压玩具', '桌游', '益智玩具'],
     
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 2060 },
@@ -142,7 +142,7 @@ export const INDUSTRIES = {
   },
   outdoor: {
     zh: '户外运动', slug: 'outdoor',
-    keywords: ['Yoga Mats', 'Water Bottles', 'Camping Tools', 'Gym Bags', 'Cycling Accessories'],
+    keywords: ['瑜伽垫', '水瓶', '露营装备', '健身包', '骑行配件'],
     
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 2280 },
@@ -162,7 +162,7 @@ export const INDUSTRIES = {
   },
   electronics: {
     zh: '电子配件', slug: 'electronics',
-    keywords: ['Phone Cases', 'Chargers', 'Power Banks', 'Cables', 'Bluetooth Speakers'],
+    keywords: ['手机壳', '充电器', '充电宝', '数据线', '蓝牙音箱'],
     
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 3420 },
@@ -182,7 +182,7 @@ export const INDUSTRIES = {
   },
   fashion: {
     zh: '服饰鞋包', slug: 'fashion',
-    keywords: ['Women Dresses', 'Men Jackets', 'Sneakers', 'Handbags', 'Scarves'],
+    keywords: ['女装连衣裙', '男士夹克', '运动鞋', '手袋', '围巾'],
     
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 2860 },
@@ -202,7 +202,7 @@ export const INDUSTRIES = {
   },
   baby: {
     zh: '母婴用品', slug: 'baby',
-    keywords: ['Baby Strollers', 'Baby Clothes', 'Diaper Bags', 'Baby Toys', 'Feeding Bottles'],
+    keywords: ['婴儿推车', '婴儿服装', '妈咪包', '婴儿玩具', '奶瓶'],
     
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 1780 },
@@ -222,7 +222,7 @@ export const INDUSTRIES = {
   },
   car: {
     zh: '汽车配件', slug: 'car',
-    keywords: ['Brake Pads', 'Oil Filters', 'Car Lights', 'Suspension Parts', 'Car Electronics'],
+    keywords: ['刹车片', '机油滤清器', '车灯', '悬挂零件', '汽车电子'],
     
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 3120 },
@@ -242,7 +242,7 @@ export const INDUSTRIES = {
   },
   hardware: {
     zh: '五金工具', slug: 'hardware',
-    keywords: ['Hand Tools', 'Power Tools', 'Fasteners', 'Wrenches', 'Drill Bits'],
+    keywords: ['手动工具', '电动工具', '紧固件', '扳手', '钻头'],
     
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 2460 },
@@ -262,7 +262,7 @@ export const INDUSTRIES = {
   },
   party: {
     zh: '派对节庆', slug: 'party',
-    keywords: ['Balloons', 'Party Hats', 'Confetti', 'Banners', 'Christmas Decorations'],
+    keywords: ['气球', '派对帽', '彩纸屑', '横幅', '圣诞装饰'],
     
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 1680 },
@@ -282,7 +282,7 @@ export const INDUSTRIES = {
   },
   health: {
     zh: '健康护理', slug: 'health',
-    keywords: ['Massage Guns', 'Fitness Trackers', 'First Aid Kits', 'Pill Organizers', 'Thermometers'],
+    keywords: ['按摩枪', '健身追踪器', '急救包', '药盒', '温度计'],
     
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 2120 },
@@ -302,7 +302,7 @@ export const INDUSTRIES = {
   },
   lighting: {
     zh: '灯具照明', slug: 'lighting',
-    keywords: ['LED Bulbs', 'Smart Lights', 'Outdoor Lights', 'Pendant Lamps', 'Solar Lights'],
+    keywords: ['LED灯泡', '智能灯', '户外灯', '吊灯', '太阳能灯'],
     
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 1860 },
@@ -322,7 +322,7 @@ export const INDUSTRIES = {
   },
   textile: {
     zh: '家纺面料', slug: 'textile',
-    keywords: ['Cotton Fabric', 'Polyester', 'Bed Sheets', 'Towels', 'Curtains'],
+    keywords: ['棉布', '涤纶', '床单', '毛巾', '窗帘'],
     
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 1920 },
@@ -342,7 +342,7 @@ export const INDUSTRIES = {
   },
   furniture: {
     zh: '家具家装', slug: 'furniture',
-    keywords: ['Office Chairs', 'Dining Tables', 'Shelving', 'Sofas', 'Storage Cabinets'],
+    keywords: ['办公椅', '餐桌', '货架', '沙发', '储物柜'],
     
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 2680 },
@@ -362,7 +362,7 @@ export const INDUSTRIES = {
   },
   bag: {
     zh: '箱包旅行', slug: 'bag',
-    keywords: ['Backpacks', 'Travel Bags', 'Laptop Bags', 'Tote Bags', 'Luggage'],
+    keywords: ['背包', '旅行包', '电脑包', '托特包', '行李箱'],
     
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 1720 },
@@ -382,7 +382,7 @@ export const INDUSTRIES = {
   },
   watches: {
     zh: '手表眼镜', slug: 'watches',
-    keywords: ['Smart Watches', 'Fashion Watches', 'Sunglasses', 'Reading Glasses', 'Watch Bands'],
+    keywords: ['智能手表', '时尚手表', '太阳镜', '老花镜', '表带'],
     
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 1580 },

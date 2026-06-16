@@ -37,7 +37,7 @@ export async function runFollowUps() {
       if (!plan?.followUp) continue;
 
       const smtp = await getSmtpConfig(userId);
-      if (!smtp) continue;
+      if (!smtp?.host || !smtp?.user || !smtp?.pass) continue;
 
       const transporter = nodemailer.createTransport({
         host: smtp.host, port: smtp.port || 465,

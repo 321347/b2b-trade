@@ -151,8 +151,9 @@ const SEARCH_FNS = {
 };
 
 export async function searchAllProviders(domain, quotaState) {
+  const qs = quotaState || {};
   const available = Object.values(PROVIDERS)
-    .filter((p) => (quotaState[p.name]?.usedThisMonth || 0) < p.monthlyQuota)
+    .filter((p) => (qs[p.name]?.usedThisMonth || 0) < p.monthlyQuota)
     .sort((a, b) => a.priority - b.priority);
 
   if (available.length === 0) return { error: 'all_quota_exhausted', providers: {} };

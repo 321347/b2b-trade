@@ -3,7 +3,8 @@ import { listAllUsers, setUserPlan } from '@/lib/plans';
 
 function checkAdmin(req) {
   const auth = req.headers.get('authorization');
-  const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (!adminPassword) return false;
   return auth === `Bearer ${Buffer.from(adminPassword).toString('base64')}`;
 }
 

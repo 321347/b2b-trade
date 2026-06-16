@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { Check } from 'lucide-react';
+import { Check, BookmarkPlus } from 'lucide-react';
 import { maskEmail, loadHistory, saveHistory, authHeaders, MARKETS, INDUSTRY_GROUPS, getUserName } from '@/lib/utils';
 import { IndustryIcon } from '@/lib/icon-map';
 
@@ -21,6 +21,7 @@ export default function SearchPage({ variant = 'home' }) {
   const [quota, setQuota] = useState(null);
   const [selectedIndustry, setSelectedIndustry] = useState(null);
   const [showCustom, setShowCustom] = useState(true);
+  const [savedCrmIds, setSavedCrmIds] = useState(new Set());
   const inputRef = useRef(null);
   const isHome = variant === 'home';
 
@@ -33,7 +34,7 @@ export default function SearchPage({ variant = 'home' }) {
       setUser(parsed);
       const plan = parsed.plan || parsed.user_metadata?.plan || 'free';
       setUserPlan(plan);
-      fetch('/api/smtp-config', { headers: authHeaders() }).then(r => r.json()).then(d => setSmtpConfigured(!!d.config));
+      fetch('/api/smtp-config', { headers: authHeaders() }).then(r => r.json()).then(d => setSmtpConfigured(!!d.config)).catch(() => {});
       // 从 Supabase 同步搜索历史
       fetch('/api/user/history', { headers: authHeaders() }).then(r => r.json()).then(d => {
         if (d.history?.length > 0) {
@@ -127,6 +128,17 @@ export default function SearchPage({ variant = 'home' }) {
     navigator.clipboard.writeText(`To: ${email}\nSubject: ${e?.customSubject || ''}\n\n${e?.customBody || ''}`).then(() => {
       setCopiedIdx(i); setTimeout(() => setCopiedIdx(null), 2000);
     });
+  }
+
+  async function saveToCrm(company) {
+    const saved = new Set(savedCrmIds);
+    saved.add(company.domain);
+    setSavedCrmIds(saved);
+    const email = company.emails[0] || '';
+    await fetch('/api/crm', {
+      method: 'POST', headers: authHeaders(),
+      body: JSON.stringify({ email, company: company.company, domain: company.domain, market: company.market, status: 'contacted' }),
+    }).catch(() => {});
   }
 
   function copyAll() {
@@ -275,7 +287,15 @@ export default function SearchPage({ variant = 'home' }) {
                   <span style={{ fontSize: 15, fontWeight: 600, color: '#0f172a' }}>{c.company}</span>
                   <span style={{ fontSize: 12, color: '#94a3b8', marginLeft: 10 }}>{c.domain} · {c.market}</span>
                 </div>
-                <span style={{ fontSize: 12, color: '#94a3b8' }}>{c.emails.length} 人</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  {user && (
+                    <button onClick={() => saveToCrm(c)} disabled={savedCrmIds.has(c.domain)}
+                      style={{ background: 'none', border: 'none', cursor: savedCrmIds.has(c.domain) ? 'default' : 'pointer', padding: '2px 6px', opacity: savedCrmIds.has(c.domain) ? 0.5 : 1 }}>
+                      <BookmarkPlus size={16} style={{ color: savedCrmIds.has(c.domain) ? '#10b981' : '#94a3b8' }} />
+                    </button>
+                  )}
+                  <span style={{ fontSize: 12, color: '#94a3b8' }}>{c.emails.length} 人</span>
+                </div>
               </div>
 
               {user && (userPlan === 'basic' || userPlan === 'pro' || userPlan === 'enterprise') ? (

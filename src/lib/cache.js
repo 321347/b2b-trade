@@ -16,6 +16,7 @@ export function getCached(domain) {
   const key = domain.toLowerCase();
   const entry = memCache.get(key);
   if (entry) {
+    if (!entry.cachedAt) { memCache.delete(key); return null; }
     const age = Date.now() - new Date(entry.cachedAt).getTime();
     if (age > 7 * 24 * 60 * 60 * 1000) { memCache.delete(key); return null; }
     return entry;
@@ -30,8 +31,9 @@ export async function getCachedAsync(domain) {
     const supabase = getSupabase();
     const { data } = await supabase.from('search_cache').select('results').eq('domain', domain.toLowerCase()).maybeSingle();
     if (data?.results) {
-      memCache.set(domain.toLowerCase(), { ...data.results, cachedAt: data.results.cachedAt || new Date().toISOString() });
-      return data.results;
+      const entry = { ...data.results, cachedAt: data.results.cachedAt || new Date().toISOString() };
+      memCache.set(domain.toLowerCase(), entry);
+      return entry;
     }
   } catch {}
   return null;

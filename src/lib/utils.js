@@ -49,6 +49,7 @@ export function authHeaders() {
 }
 
 export function sanitizeRedirect(url) {
-  if (!url || url.startsWith('/')) return url;
+  if (!url) return '/';
+  if (url.startsWith('/') && !url.startsWith('//')) return url;
   return '/';
 }

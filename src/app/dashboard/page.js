@@ -10,7 +10,8 @@ export default function Dashboard() {
     const u = localStorage.getItem('user');
     const token = localStorage.getItem('token');
     if (!u || !token) { window.location.href = '/login'; return; }
-    setUser(JSON.parse(u));
+    try { setUser(JSON.parse(u)); }
+    catch { localStorage.removeItem('user'); localStorage.removeItem('token'); window.location.href = '/login'; return; }
     fetch('/api/dashboard', { headers: { Authorization: 'Bearer ' + token } })
       .then(r => r.json())
       .then(d => { if (!d.error) setData(d); else { localStorage.removeItem('user'); localStorage.removeItem('token'); window.location.href = '/login'; } })
@@ -21,7 +22,7 @@ export default function Dashboard() {
   const [tracks, setTracks] = useState(null);
 
   const recentSearches = typeof window !== 'undefined'
-    ? JSON.parse(localStorage.getItem('searchHistory') || '[]')
+    ? (() => { try { return JSON.parse(localStorage.getItem('searchHistory') || '[]'); } catch { return []; } })()
     : [];
 
   useEffect(() => {

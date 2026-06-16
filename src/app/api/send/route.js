@@ -54,13 +54,19 @@ export async function POST(req) {
   // 批量发送（每次最多 3 封，防止 Vercel 超时）
   if (body.targets && Array.isArray(body.targets)) {
     const batch = body.targets.slice(0, 3);
-    const trackIds = await createTracksBatch(user.id, batch);
-    const results = [];
-    for (let i = 0; i < batch.length; i++) {
-      const t = batch[i];
+    // 预先过滤掉没有收件人的条目
+    const validBatch = [];
+    const skipped = [];
+    for (const t of batch) {
+      if (t.email || t.to) validBatch.push(t);
+      else skipped.push(t);
+    }
+    const trackIds = await createTracksBatch(user.id, validBatch);
+    const results = skipped.map(t => ({ email: t.email || '', status: 'fail', error: 'Missing recipient' }));
+    for (let i = 0; i < validBatch.length; i++) {
+      const t = validBatch[i];
       const trackId = trackIds[i];
       const recipient = t.email || t.to;
-      if (!recipient) { results.push({ email: '', status: 'fail', error: 'Missing recipient' }); continue; }
       try {
         const transporter = userTransporter || (process.env.SMTP_HOST ? nodemailer.createTransport({
           host: process.env.SMTP_HOST, port: parseInt(process.env.SMTP_PORT) || 465,
@@ -107,15 +113,20 @@ export async function POST(req) {
   const html = buildHtml(body.body, from, trackId, baseUrl);
 
   let lastError;
+  let sent = false;
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
-      const info = await transporter.sendMail({ from, replyTo: from, to: recipient, subject: subject || 'Business Inquiry', html });
-      await recordSend(req);
-      return NextResponse.json({ ok: true, results: [{ email: recipient, status: 'ok', messageId: info.messageId }], sent: 1, failed: 0 });
+      await transporter.sendMail({ from, replyTo: from, to: recipient, subject: subject || 'Business Inquiry', html });
+      sent = true;
+      break;
     } catch (e) {
       lastError = e;
       if (attempt < 2) await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
     }
+  }
+  if (sent) {
+    await recordSend(req);
+    return NextResponse.json({ ok: true, results: [{ email: recipient, status: 'ok' }], sent: 1, failed: 0 });
   }
   return NextResponse.json({ ok: false, error: lastError?.message, results: [{ email: recipient, status: 'fail', error: lastError?.message }], sent: 0, failed: 1 });
 }

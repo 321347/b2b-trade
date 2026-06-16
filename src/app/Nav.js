@@ -15,6 +15,7 @@ export default function Nav() {
     { href: '/industries', label: '行业品类' },
     { href: '/send', label: '手动发信' },
     { href: '/email-settings', label: '邮箱设置', hideMobile: true },
+    { href: '/crm', label: '客户CRM', hideMobile: true },
     { href: '/dashboard', label: '数据看板', hideMobile: true },
     { href: '/pricing', label: '定价' },
   ];

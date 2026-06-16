@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
 import { searchAllProviders } from '@/lib/providers';
 import { checkDomainMX } from '@/lib/guesser';
-import { getCachedAsync, setCached, getQuotaState, incrementQuota, getQuotaSummary, loadQuotaFromDB } from '@/lib/cache';
+import { getCachedAsync, setCached, getQuotaState, incrementQuota, loadQuotaFromDB } from '@/lib/cache';
 import { PLANS } from '@/lib/plans';
 
 export const dynamic = 'force-dynamic';
@@ -14,24 +14,25 @@ async function getUserByApiKey(apiKey) {
   if (cached && cached.expiry > Date.now()) return cached;
 
   const admin = getSupabaseAdmin();
-  // 分页列出所有用户，查找匹配的 api_key
-  let page = 0;
-  while (true) {
-    const { data } = await admin.auth.admin.listUsers({ page, perPage: 200 });
-    if (!data?.users?.length) break;
-    for (const u of data.users) {
-      if (u.user_metadata?.api_key === apiKey) {
-        const planKey = u.user_metadata?.plan || 'free';
-        const entry = { userId: u.id, planKey, plan: PLANS[planKey] || PLANS.free, user: u, expiry: Date.now() + 60000 };
-        apiKeyCache.set(apiKey, entry);
-        return entry;
-      }
+
+  // O(1) 查询 api_keys 索引表
+  const { data: keyRow } = await admin
+    .from('api_keys')
+    .select('user_id')
+    .eq('api_key', apiKey)
+    .maybeSingle();
+
+  if (keyRow?.user_id) {
+    const { data: { user } } = await admin.auth.admin.getUserById(keyRow.user_id);
+    if (user) {
+      const planKey = user.user_metadata?.plan || 'free';
+      const entry = { userId: user.id, planKey, plan: PLANS[planKey] || PLANS.free, user, expiry: Date.now() + 60000 };
+      apiKeyCache.set(apiKey, entry);
+      return entry;
     }
-    if (data.users.length < 200) break;
-    page++;
   }
 
-  // 无效 key 也缓存 10 秒，避免重复查库
+  // 无效 key 缓存 10 秒
   apiKeyCache.set(apiKey, { userId: null, planKey: null, plan: null, user: null, expiry: Date.now() + 10000 });
   return null;
 }
@@ -99,12 +100,15 @@ export async function POST(req) {
     }
   }
 
-  // 扣减配额
+  // 原子扣减配额
   const admin = getSupabaseAdmin();
-  await admin.auth.admin.updateUserById(auth.userId, {
-    user_metadata: { ...user.user_metadata, [quotaField]: current - 1 },
-  });
-  // 使 API key 缓存失效
+  try {
+    await admin.rpc('decrement_quota', { user_id: auth.userId, plan_key: planKey });
+  } catch {
+    await admin.auth.admin.updateUserById(auth.userId, {
+      user_metadata: { ...user.user_metadata, [quotaField]: current - 1 },
+    });
+  }
   apiKeyCache.delete(apiKey);
 
   const allEmails = (apiResult.emails || []).sort((a, b) => (b.confidence || 0) - (a.confidence || 0));

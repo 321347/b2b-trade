@@ -2,10 +2,6 @@ import Nav from './Nav';
 
 export const viewport = { width: 'device-width', initialScale: 1 };
 
-export const icons = {
-  icon: 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2242%22 fill=%22%232563eb%22 stroke=%22%231e40af%22 stroke-width=%224%22/><ellipse cx=%2250%22 cy=%2250%22 rx=%2216%22 ry=%2238%22 fill=%22none%22 stroke=%22%23fff%22 stroke-width=%223%22/><line x1=%2210%22 y1=%2236%22 x2=%2290%22 y2=%2236%22 stroke=%22%23fff%22 stroke-width=%223%22/><line x1=%2210%22 y1=%2264%22 x2=%2290%22 y2=%2264%22 stroke=%22%23fff%22 stroke-width=%223%22/></svg>',
-};
-
 export const metadata = {
   title: {
     default: '跨境蜂 - 外贸获客工具 | 智能找海外客户 + 自动发开发信',
@@ -42,6 +38,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="zh-CN">
       <head>
+        <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%232563eb'/%3E%3Cellipse cx='16' cy='16' rx='6' ry='13' fill='none' stroke='%23fff' stroke-width='1.5'/%3E%3Cline x1='2' y1='11' x2='30' y2='11' stroke='%23fff' stroke-width='1.5'/%3E%3Cline x1='2' y1='21' x2='30' y2='21' stroke='%23fff' stroke-width='1.5'/%3E%3C/svg%3E" />
         <style dangerouslySetInnerHTML={{ __html: '@media(max-width:640px){.hide-mobile{display:none!important}}' }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </head>

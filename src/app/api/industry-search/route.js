@@ -143,15 +143,17 @@ async function querySupabase(q, queryTerms) {
 }
 
 function matchLocal(q, queryTerms) {
-  let categoryMatches = [];
+  const matched = new Set();
   for (const [cat, names] of Object.entries(CATEGORY_MAP)) {
     if (queryTerms.some(qt => cat.includes(qt) || qt.includes(cat))) {
-      categoryMatches = COMPANY_DB.filter(c => names.includes(c.company)).map(c => c.company);
+      for (const c of COMPANY_DB.filter(c => names.includes(c.company))) {
+        matched.add(c.company);
+      }
     }
   }
 
   return COMPANY_DB.filter(c => {
-    if (categoryMatches.includes(c.company)) return true;
+    if (matched.has(c.company)) return true;
     const kwList = c.keywords.split(',').map(k => k.trim());
     return kwList.some(kw => queryTerms.some(qt => kw.includes(qt) || qt.includes(kw)))
       || c.company.toLowerCase().includes(q) || c.domain.includes(q);
@@ -170,9 +172,17 @@ export async function GET(req) {
   const rl = await checkRateLimit('search', ip);
   if (!rl.allowed) return NextResponse.json({ error: '搜索太频繁，请稍后再试' }, { status: 429 });
 
-  // 未登录用户：IP 每日搜索上限 10 次
+  // 验证登录状态，未登录/无效 token 走 IP 每日限制
+  let isAuthenticated = false;
   const authHeader = req.headers.get('authorization');
-  if (!authHeader) {
+  if (authHeader?.startsWith('Bearer ')) {
+    try {
+      const { getUser } = await import('@/lib/auth');
+      const authUser = await getUser(req);
+      if (authUser) isAuthenticated = true;
+    } catch {}
+  }
+  if (!isAuthenticated) {
     const ipDaily = await checkRateLimit('anonSearch', ip);
     if (!ipDaily.allowed) return NextResponse.json({ error: '免费搜索次数已用完，请注册获取 10 次搜索', needLogin: true }, { status: 429 });
   }

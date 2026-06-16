@@ -24,8 +24,9 @@ const ROLE_EMAILS = [
 
 // 生成所有可能的邮箱
 export function generateCandidates(firstName, lastName, domain) {
-  const f = firstName.toLowerCase().replace(/[^a-z]/g, '');
-  const l = lastName.toLowerCase().replace(/[^a-z]/g, '');
+  if (!domain) return [];
+  const f = (firstName || '').toLowerCase().replace(/[^a-z]/g, '');
+  const l = (lastName || '').toLowerCase().replace(/[^a-z]/g, '');
   const candidates = [];
   const seen = new Set();
 

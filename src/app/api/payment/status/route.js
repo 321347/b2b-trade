@@ -18,16 +18,5 @@ export async function GET(req) {
     return NextResponse.json({ paid: true, plan: plan.key });
   }
 
-  // 查订单是否还在 Redis（已消费表示回调已处理）
-  const { searchParams } = new URL(req.url);
-  const orderNo = searchParams.get('orderNo');
-  if (orderNo) {
-    const redis = getRedis();
-    if (redis) {
-      const raw = await redis.get(`order:${orderNo}`);
-      if (!raw) return NextResponse.json({ paid: true });
-    }
-  }
-
   return NextResponse.json({ paid: false });
 }

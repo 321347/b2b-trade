@@ -1,4 +1,4 @@
-import { getSupabase } from '@/lib/supabase';
+import { getSupabase, getSupabaseAdmin } from '@/lib/supabase';
 import { PLANS } from '@/lib/plans';
 
 const supabase = getSupabase();
@@ -16,13 +16,16 @@ export async function getUserQuota(req) {
     const authHeader = req.headers.get('authorization');
     if (!authHeader?.startsWith('Bearer ')) return { remaining: -1, total: 10, plan: 'free' };
 
-    const { plan } = await getPlanFromToken(authHeader.slice(7));
-    return {
-      remaining: plan.searches,
-      total: plan.searches,
-      used: 0,
-      plan: plan.name,
-    };
+    const { user, plan, planKey } = await getPlanFromToken(authHeader.slice(7));
+    if (!user) return { remaining: -1, total: 10, plan: 'free' };
+
+    const quotaField = `quota_${planKey}`;
+    const total = plan.searches;
+    const remaining = typeof user.user_metadata?.[quotaField] === 'number'
+      ? user.user_metadata[quotaField]
+      : total;
+
+    return { remaining, total, used: total - remaining, plan: plan.name };
   } catch {
     return { remaining: -1, total: 10, plan: 'free' };
   }
@@ -37,16 +40,30 @@ export async function decrementQuota(req) {
     const { user, plan, planKey } = await getPlanFromToken(token);
     if (!user) return null;
 
+    const total = plan.searches;
+
+    // 优先走 DB RPC 原子扣减，消除竞态
+    try {
+      const admin = getSupabaseAdmin();
+      const { data, error } = await admin.rpc('decrement_quota', {
+        user_id: user.id,
+        plan_key: planKey,
+      });
+      if (!error && data?.success) {
+        return { remaining: data.remaining, total, plan: plan.name, used: total - data.remaining };
+      }
+      if (!error && data?.success === false) {
+        return { remaining: 0, total, plan: plan.name };
+      }
+    } catch {}
+
+    // RPC 不可用时的 fallback：读-改-写（有竞态风险但不会完全阻塞）
     const meta = user.user_metadata || {};
     const quotaField = `quota_${planKey}`;
-    const total = plan.searches;
     const current = typeof meta[quotaField] === 'number' ? meta[quotaField] : total;
-
     if (current <= 0) return { remaining: 0, total, plan: plan.name };
-
     const newQuota = current - 1;
     await supabase.auth.updateUser({ data: { [quotaField]: newQuota } });
-
     return { remaining: newQuota, total, plan: plan.name, used: total - newQuota };
   } catch {
     return null;
