@@ -1,10 +1,7 @@
+'use client';
 import Link from 'next/link';
 import { getAllIndustries } from '@/lib/industries';
-
-export const metadata = {
-  title: '外贸行业品类大全 - 20大行业精准获客',
-  description: '覆盖厨房小工具、宠物用品、电子配件等20大外贸行业，精准查找海外采购商和进口商联系方式。',
-};
+import { IndustryIcon } from '@/lib/icon-map';
 
 export default function IndustriesPage() {
   const industries = getAllIndustries();
@@ -22,15 +19,12 @@ export default function IndustriesPage() {
         {industries.map(ind => (
           <Link key={ind.slug} href={`/industries/${ind.slug}`}
             style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 12, padding: 24, textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: 16, transition: 'all 0.2s' }}>
-            <div style={{ fontSize: 32, width: 56, height: 56, background: '#eff6ff', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              {ind.icon}
+            <div style={{ width: 56, height: 56, background: '#eff6ff', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: '#2563eb' }}>
+              <IndustryIcon slug={ind.slug} size={28} />
             </div>
             <div>
               <h3 style={{ fontSize: 16, fontWeight: 600, color: '#0f172a', margin: '0 0 4px' }}>{ind.zh}</h3>
               <p style={{ fontSize: 13, color: '#94a3b8', margin: 0 }}>{ind.keywords.slice(0, 3).join('、')}...</p>
-            </div>
-            <div style={{ marginLeft: 'auto', fontSize: 14, fontWeight: 600, color: '#2563eb', whiteSpace: 'nowrap' }}>
-              {ind.count.toLocaleString()}+
             </div>
           </Link>
         ))}

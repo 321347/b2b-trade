@@ -31,7 +31,7 @@ export default function SearchPage({ variant = 'home' }) {
     if (u) {
       const parsed = JSON.parse(u);
       setUser(parsed);
-      const plan = parsed.user_metadata?.plan || 'free';
+      const plan = parsed.plan || parsed.user_metadata?.plan || 'free';
       setUserPlan(plan);
       fetch('/api/smtp-config', { headers: authHeaders() }).then(r => r.json()).then(d => setSmtpConfigured(!!d.config));
       // 从 Supabase 同步搜索历史
@@ -58,10 +58,22 @@ export default function SearchPage({ variant = 'home' }) {
     setSuggestions(d.suggestions || []);
     if (d.quota) setQuota(d.quota);
     if (d.companies.length > 0 && user) {
-      const generated = await Promise.all(d.companies.map(c =>
-        fetch('/api/generate-email', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ company: c.company, industry: q, market, domain: c.domain, contactName: (c.emails[0] || '').split('@')[0].split('.')[0] }) }).then(r => r.json())
-      ));
-      setEmails(generated.map(g => ({ ...g, customSubject: g.subject, customBody: g.body })));
+      const results = new Array(d.companies.length).fill(null);
+      setEmails(results.map(() => ({})));
+      // 3 并发逐批生成
+      for (let i = 0; i < d.companies.length; i += 3) {
+        const batch = d.companies.slice(i, i + 3);
+        await Promise.all(batch.map((c, j) => {
+          const idx = i + j;
+          return fetch('/api/generate-email', {
+            method: 'POST', headers: authHeaders(),
+            body: JSON.stringify({ company: c.company, industry: q, market, domain: c.domain, contactName: (c.emails[0] || '').split('@')[0].split('.')[0], tone: 'formal', length: 'medium', extras: { sample: true, companyIntro: true } }),
+          })
+          .then(r => r.json())
+          .then(g => { results[idx] = { ...g, customSubject: g.subject, customBody: g.body }; setEmails([...results]); })
+          .catch(() => { results[idx] = { error: true, subject: '', body: '' }; setEmails([...results]); });
+        }));
+      }
     }
     setLoading(false);
   }
@@ -90,6 +102,7 @@ export default function SearchPage({ variant = 'home' }) {
 
   async function handleSend() {
     if (!user) { setShowLoginTip(true); return; }
+    if (userPlan === 'free') { window.location.href = '/pricing'; return; }
     if (!smtpConfigured) { window.location.href = '/email-settings'; return; }
     const targets = [];
     companies.forEach((c, i) => { c.emails.forEach(email => { targets.push({ email, company: c.company, subject: emails[i]?.customSubject, body: emails[i]?.customBody }); }); });
@@ -101,10 +114,9 @@ export default function SearchPage({ variant = 'home' }) {
       try {
         const r = await fetch('/api/send', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ to: t.email, name: t.name, company: t.company, subject: t.subject, body: t.body }) });
         const d = await r.json();
-        results.push({ email: t.email, status: d.ok ? 'ok' : 'fail' });
-      } catch { results.push({ email: t.email, status: 'fail' }); }
+        results.push({ email: t.email, status: d.ok ? 'ok' : 'fail', error: d.error });
+      } catch { results.push({ email: t.email, status: 'fail', error: '网络错误' }); }
       setSent([...results]);
-      // 每封间隔 2-3 分钟
       if (i < targets.length - 1) await new Promise(r => setTimeout(r, 120000 + Math.random() * 60000));
     }
     setSending(false);

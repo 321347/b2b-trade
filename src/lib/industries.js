@@ -3,7 +3,7 @@ export const INDUSTRIES = {
   kitchen: {
     zh: '厨房小工具', slug: 'kitchen',
     keywords: ['Garlic Press', 'Spiralizer', 'Peeler', 'Grater', 'Kitchen Scale'],
-    count: 8420, countries: 24, emails: 4100,
+    
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 2340 },
       { flag: '🇬🇧', name: '英国', count: 1560 },
@@ -23,7 +23,7 @@ export const INDUSTRIES = {
   pet: {
     zh: '宠物用品', slug: 'pet',
     keywords: ['Pet Toys', 'Dog Beds', 'Cat Scratchers', 'Pet Bowls', 'Grooming Tools'],
-    count: 7650, countries: 22, emails: 3800,
+    
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 2100 },
       { flag: '🇬🇧', name: '英国', count: 1380 },
@@ -43,7 +43,7 @@ export const INDUSTRIES = {
   gift: {
     zh: '礼品纪念品', slug: 'gift',
     keywords: ['Fridge Magnets', 'Keychains', 'Mugs', 'Photo Frames', 'Candles'],
-    count: 6230, countries: 20, emails: 3100,
+    
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 1680 },
       { flag: '🇬🇧', name: '英国', count: 1120 },
@@ -63,7 +63,7 @@ export const INDUSTRIES = {
   home: {
     zh: '家居园艺', slug: 'home',
     keywords: ['Cushion Covers', 'Throw Blankets', 'Wall Art', 'Vases', 'Planters'],
-    count: 9870, countries: 26, emails: 5200,
+    
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 2860 },
       { flag: '🇬🇧', name: '英国', count: 1740 },
@@ -83,7 +83,7 @@ export const INDUSTRIES = {
   beauty: {
     zh: '美妆个护', slug: 'beauty',
     keywords: ['Makeup Brushes', 'Cosmetic Bags', 'Hair Accessories', 'Beauty Sponges'],
-    count: 8940, countries: 24, emails: 4600,
+    
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 2480 },
       { flag: '🇬🇧', name: '英国', count: 1520 },
@@ -103,7 +103,7 @@ export const INDUSTRIES = {
   stationery: {
     zh: '文具办公', slug: 'stationery',
     keywords: ['Notebooks', 'Pens', 'Sticky Notes', 'Desk Organizers', 'File Folders'],
-    count: 5120, countries: 18, emails: 2600,
+    
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 1380 },
       { flag: '🇬🇧', name: '英国', count: 920 },
@@ -123,7 +123,7 @@ export const INDUSTRIES = {
   toys: {
     zh: '玩具游戏', slug: 'toys',
     keywords: ['Plush Toys', 'Puzzle Games', 'Fidget Toys', 'Board Games', 'Educational Toys'],
-    count: 7230, countries: 22, emails: 3700,
+    
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 2060 },
       { flag: '🇬🇧', name: '英国', count: 1280 },
@@ -143,7 +143,7 @@ export const INDUSTRIES = {
   outdoor: {
     zh: '户外运动', slug: 'outdoor',
     keywords: ['Yoga Mats', 'Water Bottles', 'Camping Tools', 'Gym Bags', 'Cycling Accessories'],
-    count: 8120, countries: 24, emails: 4300,
+    
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 2280 },
       { flag: '🇩🇪', name: '德国', count: 1420 },
@@ -163,7 +163,7 @@ export const INDUSTRIES = {
   electronics: {
     zh: '电子配件', slug: 'electronics',
     keywords: ['Phone Cases', 'Chargers', 'Power Banks', 'Cables', 'Bluetooth Speakers'],
-    count: 12540, countries: 28, emails: 6800,
+    
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 3420 },
       { flag: '🇩🇪', name: '德国', count: 2180 },
@@ -183,7 +183,7 @@ export const INDUSTRIES = {
   fashion: {
     zh: '服饰鞋包', slug: 'fashion',
     keywords: ['Women Dresses', 'Men Jackets', 'Sneakers', 'Handbags', 'Scarves'],
-    count: 10280, countries: 26, emails: 5400,
+    
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 2860 },
       { flag: '🇬🇧', name: '英国', count: 1780 },
@@ -203,7 +203,7 @@ export const INDUSTRIES = {
   baby: {
     zh: '母婴用品', slug: 'baby',
     keywords: ['Baby Strollers', 'Baby Clothes', 'Diaper Bags', 'Baby Toys', 'Feeding Bottles'],
-    count: 6480, countries: 20, emails: 3200,
+    
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 1780 },
       { flag: '🇬🇧', name: '英国', count: 1120 },
@@ -223,7 +223,7 @@ export const INDUSTRIES = {
   car: {
     zh: '汽车配件', slug: 'car',
     keywords: ['Brake Pads', 'Oil Filters', 'Car Lights', 'Suspension Parts', 'Car Electronics'],
-    count: 11200, countries: 28, emails: 5800,
+    
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 3120 },
       { flag: '🇩🇪', name: '德国', count: 2240 },
@@ -243,7 +243,7 @@ export const INDUSTRIES = {
   hardware: {
     zh: '五金工具', slug: 'hardware',
     keywords: ['Hand Tools', 'Power Tools', 'Fasteners', 'Wrenches', 'Drill Bits'],
-    count: 8760, countries: 24, emails: 4500,
+    
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 2460 },
       { flag: '🇩🇪', name: '德国', count: 1680 },
@@ -263,7 +263,7 @@ export const INDUSTRIES = {
   party: {
     zh: '派对节庆', slug: 'party',
     keywords: ['Balloons', 'Party Hats', 'Confetti', 'Banners', 'Christmas Decorations'],
-    count: 5890, countries: 18, emails: 2900,
+    
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 1680 },
       { flag: '🇬🇧', name: '英国', count: 1040 },
@@ -283,7 +283,7 @@ export const INDUSTRIES = {
   health: {
     zh: '健康护理', slug: 'health',
     keywords: ['Massage Guns', 'Fitness Trackers', 'First Aid Kits', 'Pill Organizers', 'Thermometers'],
-    count: 7340, countries: 22, emails: 3800,
+    
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 2120 },
       { flag: '🇩🇪', name: '德国', count: 1340 },
@@ -303,7 +303,7 @@ export const INDUSTRIES = {
   lighting: {
     zh: '灯具照明', slug: 'lighting',
     keywords: ['LED Bulbs', 'Smart Lights', 'Outdoor Lights', 'Pendant Lamps', 'Solar Lights'],
-    count: 6780, countries: 22, emails: 3400,
+    
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 1860 },
       { flag: '🇩🇪', name: '德国', count: 1240 },
@@ -323,7 +323,7 @@ export const INDUSTRIES = {
   textile: {
     zh: '家纺面料', slug: 'textile',
     keywords: ['Cotton Fabric', 'Polyester', 'Bed Sheets', 'Towels', 'Curtains'],
-    count: 7120, countries: 22, emails: 3600,
+    
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 1920 },
       { flag: '🇬🇧', name: '英国', count: 1180 },
@@ -343,7 +343,7 @@ export const INDUSTRIES = {
   furniture: {
     zh: '家具家装', slug: 'furniture',
     keywords: ['Office Chairs', 'Dining Tables', 'Shelving', 'Sofas', 'Storage Cabinets'],
-    count: 9450, countries: 24, emails: 4800,
+    
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 2680 },
       { flag: '🇬🇧', name: '英国', count: 1520 },
@@ -363,7 +363,7 @@ export const INDUSTRIES = {
   bag: {
     zh: '箱包旅行', slug: 'bag',
     keywords: ['Backpacks', 'Travel Bags', 'Laptop Bags', 'Tote Bags', 'Luggage'],
-    count: 6340, countries: 20, emails: 3200,
+    
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 1720 },
       { flag: '🇬🇧', name: '英国', count: 1060 },
@@ -383,7 +383,7 @@ export const INDUSTRIES = {
   watches: {
     zh: '手表眼镜', slug: 'watches',
     keywords: ['Smart Watches', 'Fashion Watches', 'Sunglasses', 'Reading Glasses', 'Watch Bands'],
-    count: 5780, countries: 20, emails: 2900,
+    
     hotCountries: [
       { flag: '🇺🇸', name: '美国', count: 1580 },
       { flag: '🇬🇧', name: '英国', count: 920 },

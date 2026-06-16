@@ -13,6 +13,7 @@ export default function Nav() {
   const links = [
     { href: '/', label: '首页' },
     { href: '/industries', label: '行业品类' },
+    { href: '/send', label: '手动发信' },
     { href: '/email-settings', label: '邮箱设置', hideMobile: true },
     { href: '/dashboard', label: '数据看板', hideMobile: true },
     { href: '/pricing', label: '定价' },

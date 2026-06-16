@@ -12,6 +12,7 @@ export default function Admin() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState('');
+  const [msgType, setMsgType] = useState('ok');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(20);
@@ -80,7 +81,7 @@ export default function Admin() {
       setToken(data.token);
       fetchUsers(data.token);
     } else {
-      setMsg(data.error);
+      setMsg(data.error); setMsgType('error');
     }
   }
 
@@ -91,7 +92,8 @@ export default function Admin() {
       headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` },
     });
     const data = await res.json();
-    setMsg(data.ok ? `已更新套餐为 ${PLAN_NAMES[plan]}` : data.error);
+    if (data.ok) { setMsg(`已更新套餐为 ${PLAN_NAMES[plan]}`); setMsgType('ok'); }
+    else { setMsg(data.error); setMsgType('error'); }
     if (data.ok) fetchUsers(token);
   }
 
@@ -121,7 +123,7 @@ export default function Admin() {
         <button onClick={logout} style={{ padding: '8px 16px', borderRadius: 6, border: '1px solid #e5e7eb', background: '#fff', cursor: 'pointer', fontSize: 13 }}>退出登录</button>
       </div>
 
-      {msg && <div style={{ padding: '8px 16px', borderRadius: 8, background: '#f0fdf4', color: '#16a34a', marginBottom: 12, fontSize: 14 }}>{msg}</div>}
+      {msg && <div style={{ padding: '8px 16px', borderRadius: 8, background: msgType === 'error' ? '#fef2f2' : '#f0fdf4', color: msgType === 'error' ? '#dc2626' : '#16a34a', marginBottom: 12, fontSize: 14 }}>{msg}</div>}
 
       {/* 工具栏：搜索 + 导出 */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, gap: 12 }}>
@@ -190,19 +192,19 @@ export default function Admin() {
                       {u.apiKey ? (
                         <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
                           <code style={{ fontSize: 11, background: '#f1f5f9', padding: '2px 6px', borderRadius: 4, maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={u.apiKey}>{u.apiKey.slice(0, 12)}...</code>
-                          <button onClick={() => { navigator.clipboard.writeText(u.apiKey); setMsg('已复制 API Key'); }}
+                          <button onClick={() => { navigator.clipboard.writeText(u.apiKey); setMsg('已复制 API Key'); setMsgType('ok'); }}
                             style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, color: '#2563eb' }}>复制</button>
                           <button onClick={async () => {
                             await fetch('/api/admin/api-key', { method: 'POST', body: JSON.stringify({ userId: u.id, action: 'revoke' }), headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` } });
-                            setMsg('已撤销 API Key'); fetchUsers(token);
+                            setMsg('已撤销 API Key'); setMsgType('ok'); fetchUsers(token);
                           }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, color: '#dc2626' }}>撤销</button>
                         </span>
                       ) : (
                         <button onClick={async () => {
                           const res = await fetch('/api/admin/api-key', { method: 'POST', body: JSON.stringify({ userId: u.id, action: 'generate' }), headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` } });
                           const d = await res.json();
-                          if (d.ok) { setMsg('已生成 API Key: ' + d.api_key); fetchUsers(token); }
-                          else setMsg(d.error);
+                          if (d.ok) { setMsg('已生成 API Key: ' + d.api_key); setMsgType('ok'); fetchUsers(token); }
+                          else { setMsg(d.error); setMsgType('error'); }
                         }} style={{ padding: '4px 10px', borderRadius: 4, border: '1px solid #e5e7eb', background: '#fff', cursor: 'pointer', fontSize: 12 }}>生成</button>
                       )}
                     </td>

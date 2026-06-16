@@ -35,16 +35,16 @@ export default function IndustryPageContent({ slug }) {
       {/* 数据统计 */}
       <div style={{ display: 'flex', gap: 24, background: '#f8f9ff', borderRadius: 12, padding: '20px 28px', marginBottom: 32, flexWrap: 'wrap' }}>
         <div style={{ textAlign: 'center', flex: 1, minWidth: 100 }}>
-          <div style={{ fontSize: 24, fontWeight: 700, color: '#2563eb' }}>{industry.count.toLocaleString()}+</div>
-          <div style={{ fontSize: 13, color: '#94a3b8', marginTop: 4 }}>收录企业</div>
+          <div style={{ fontSize: 24, fontWeight: 700, color: '#2563eb' }}>15+</div>
+          <div style={{ fontSize: 13, color: '#94a3b8', marginTop: 4 }}>全球数据源</div>
         </div>
         <div style={{ textAlign: 'center', flex: 1, minWidth: 100 }}>
-          <div style={{ fontSize: 24, fontWeight: 700, color: '#2563eb' }}>{industry.countries}</div>
+          <div style={{ fontSize: 24, fontWeight: 700, color: '#2563eb' }}>30+</div>
           <div style={{ fontSize: 13, color: '#94a3b8', marginTop: 4 }}>覆盖国家</div>
         </div>
         <div style={{ textAlign: 'center', flex: 1, minWidth: 100 }}>
-          <div style={{ fontSize: 24, fontWeight: 700, color: '#2563eb' }}>{industry.emails.toLocaleString()}+</div>
-          <div style={{ fontSize: 13, color: '#94a3b8', marginTop: 4 }}>决策人邮箱</div>
+          <div style={{ fontSize: 24, fontWeight: 700, color: '#2563eb' }}>AI 生成</div>
+          <div style={{ fontSize: 13, color: '#94a3b8', marginTop: 4 }}>个性化开发信</div>
         </div>
       </div>
 
